@@ -1,20 +1,20 @@
 # TEAM 7 
 Team Information :
 
--- Vidhi Popat
-   popat.v@northeastern.edu
+-- Vidhi Popat |
+   popat.v@northeastern.edu |
    002135187
   
--- Prathamesh Nemade
-   nemade.p@northeastern.edu
+-- Prathamesh Nemade |
+   nemade.p@northeastern.edu |
    002139730
    
--- Urvang Patel
-   patel.ur@northeastern.edu
+-- Urvang Patel |
+   patel.ur@northeastern.edu |
    001568243
    
--- Milind Sharma
-   sharma.mil@northeastern.edu
+-- Milind Sharma |
+   sharma.mil@northeastern.edu |
    001090358
 
 ## Project 1
