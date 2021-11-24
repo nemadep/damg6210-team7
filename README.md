@@ -31,3 +31,7 @@ Team Information :
 ## Project 3
 1. Revised ERD [Final version] Business rules
 2. Define Security (User level access, permissions)
+
+
+Password: 
+ADMIN|Team@seven07
