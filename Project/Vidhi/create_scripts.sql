@@ -1,3 +1,8 @@
+drop table dorm;
+drop table utility_type_master;
+drop table utility;
+drop table swipe_log;
+
 create table dorm(
 dorm_id number NOT NULL,
 resident_id number NOT NULL,
