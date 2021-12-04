@@ -1,11 +1,13 @@
 /*Insert procedure for student Table*/
-CREATE OR REPLACE PROCEDURE insertStudent(sname VARCHAR, scontact VARCHAR, sdob VARCHAR, sgender CHAR,  resident BOOLEAN, permaddress VARCHAR2, semail VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE insertStudent(sname VARCHAR, scontact VARCHAR, sdob DATE, sgender CHAR,  resident CHAR, permaddress VARCHAR2, semail VARCHAR2) IS
 BEGIN
     INSERT INTO student ( student_name, student_contact, student_dob, student_gender,  is_resident, permanent_address, student_email)
     VALUES (sname, scontact, sdob, sgender, resident, permaddress, semail );
 END;
 /
 
+
+select * from student;
 /*Insert Student Data*/
 BEGIN
 insertStudent ('Jobyna Godilington', '(273) 5302377', '09-Oct-2001', 'F', 'FALSE', '26 Miller Drive', 'jgodilington0@mtv.com');
@@ -1010,3 +1012,4 @@ insertStudent ('Mellicent Tadgell', '(476) 5954480', '30-May-1994', 'F', 'TRUE',
 insertStudent ('Noak Muslim', '(841) 7717372', '09-Mar-2001', 'M', 'FALSE', '310 Summer Ridge Way', 'nmuslimrr@comcast.net');
 END;
 /
+
