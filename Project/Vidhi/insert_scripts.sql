@@ -1,3 +1,39 @@
+/*Insert procedure for Dorm Table*/
+CREATE OR REPLACE PROCEDURE insertDorm (dname VARCHAR, dcapacity NUMBER, dcity VARCHAR, dstate VARCHAR, dzip VARCHAR, daddress1 VARCHAR, daddress2 VARCHAR ) IS
+BEGIN
+    INSERT INTO dorm (dorm_name, dorm_capacity, dorm_city, dorm_state, dorm_zip, dorm_address_line1, dorm_address_line2 )
+    VALUES (dname, dcapacity, dcity, dstate, dzip, daddress1, daddress2);
+END;
+/
+
+/*Insert Dorm Data*/
+BEGIN
+insertDorm('Hastings Hall', 200, 'Boston','MA', '02139', '316 Huntington Ave', '');
+insertDorm('Meserve Hall', 400, 'Boston','MA', '02127', '35 Leon St','');
+insertDorm('Northeastern University Smith Hall', 150, 'Boston','MA', '02149', '129 Hemenway St','');
+insertDorm('Lake Hall', 300, 'Boston', 'MA', '02115', '43 Leon St','');
+insertDorm('Nightingale Hall', 300, 'Boston', 'MA', '02131', '360 Huntington Ave','');
+
+insertDorm('Blackman Auditorium', 500, 'Boston', 'MA', '02130', 'Ell Hall','342 Huntington Ave');
+insertDorm('Willis Hall', 150, 'Boston', 'MA', '02115', '50 Leon St','');
+insertDorm('White Hall', 200, 'Boston', 'MA', '02139', 'White Hall','21 Forsyth St');
+insertDorm('Hurtig Hall', 300, 'Boston', 'MA', '02147', '10 Gainsborough St','');
+insertDorm('Northeastern University Dining Services', 500, 'Boston', 'MA', '02740', '106 St Stephen St','');
+
+insertDorm('Light Hall', 200, 'Boston', 'MA', '02703', '81-83 St Stephen St','');
+insertDorm('Robinson Hall', 150, 'Boston', 'MA', '02130', '336 Huntington Ave','');
+insertDorm('Richards Hall', 300, 'Boston','MA', '02149', '360 Huntington Ave','');
+insertDorm('Loftman Hall', 300, 'Boston', 'MA', '02127', 'Northeastern University','157 Hemenway St');
+insertDorm('Shillman Hall', 300, 'Boston', 'MA', '02741', 'Northeastern University','115 Forsyth St');
+
+insertDorm('Kerr Hall', 300, 'Boston', 'MA', '02740', '96 Fenway','');
+insertDorm('Hayden Hall', 300, 'Boston', 'MA', '02703', '360 Huntington Ave','');
+insertDorm('East Village Residence Hall', 300, 'Boston', 'MA', '02131', '291 St Botolph St','');
+insertDorm('Northeastern Univ. International Village', 300, 'Boston', 'MA', '02151', '1155 Tremont St','');
+insertDorm('Burstein Hall', 300, 'Boston', 'MA', '02741', '458 Huntington Ave','');
+END;
+/
+
 /*Insert procedure for student Table*/
 CREATE OR REPLACE PROCEDURE insertStudent(sname VARCHAR, scontact VARCHAR, sdob DATE, sgender CHAR,  resident CHAR, permaddress VARCHAR2, semail VARCHAR2) IS
 BEGIN
