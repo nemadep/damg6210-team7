@@ -1,3 +1,6 @@
+-- TODO:- Dorm dates validations pending
+-- TODO:- Initial check if the dorm is allocated to the student or not
+
 CREATE OR REPLACE FUNCTION f_check_dorm_availability (
     dormid   IN NUMBER,
     fromdate IN DATE,
@@ -32,15 +35,14 @@ BEGIN
 END f_check_dorm_availability;
 /
 
-
 CREATE OR REPLACE PROCEDURE p_makestudentaresident (
     studuentid NUMBER,
     dormname   VARCHAR,
     from_date  DATE,
     to_date    DATE
 ) IS
-    is_available      NUMBER;
-    temp_dorm_id      NUMBER;
+    is_available           NUMBER;
+    temp_dorm_id           NUMBER;
     temp_is_dorm_available NUMBER;
     e_dorm_valid EXCEPTION;
 BEGIN
@@ -53,7 +55,6 @@ BEGIN
         lower(dorm_name) = lower(dormname);
 
     IF is_available = 1 THEN
-        --check availability-check availability-check availability-check availability
         SELECT
             dorm_id
         INTO temp_dorm_id
@@ -63,7 +64,7 @@ BEGIN
             lower(dorm_name) = lower(dormname);
 
         temp_is_dorm_available := f_check_dorm_availability(temp_dorm_id, from_date, to_date);
-        IF temp_is_dorm_available = 1 THEN 
+        IF temp_is_dorm_available = 1 THEN
             INSERT INTO resident (
                 dorm_id,
                 student_id,
@@ -75,9 +76,17 @@ BEGIN
                 to_date,
                 from_date
             );
+
+            UPDATE student
+            SET
+                is_resident = 'TRUE'
+            WHERE
+                student_id = studuentid;
+
         ELSE
             dbms_output.put_line('Dorm not available!');
         END IF;
+
     ELSE
         RAISE e_dorm_valid;
     END IF;
@@ -88,4 +97,5 @@ EXCEPTION
 END;
 /
 
-
+-- Ex:
+EXEC p_makestudentaresident(455, 'Willis Hall', '12-Mar-2021', '30-Aug-2025');
