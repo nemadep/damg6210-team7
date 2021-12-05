@@ -149,7 +149,7 @@ BEGIN
             END LOOP;
         END LOOP;
     ELSE
-        raise_application_warning(-20004, 'Shifts already created');
+        raise_application_error(-20004, 'Shifts already created');
     END IF;
 
     /*Close the cursors*/
@@ -159,3 +159,4 @@ END;
 /
 
 EXEC shiftscheduler(sysdate + 7);
+select * from shifts;

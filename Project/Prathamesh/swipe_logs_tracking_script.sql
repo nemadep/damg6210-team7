@@ -20,6 +20,7 @@ END;
 /
 
 -- Example
+-- studentId, dormId
 EXEC p_swipe_me(1, 8);
 EXEC p_swipe_me(2, 1);
 EXEC p_swipe_me(3, 2);
@@ -30,4 +31,4 @@ SELECT
 FROM
     swipe_log;
 
-TRUNCATE TABLE swipe_log;
+--TRUNCATE TABLE swipe_log;

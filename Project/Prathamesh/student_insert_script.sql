@@ -121,7 +121,7 @@ END;
 
 -- Example:
 SET SERVEROUTPUT ON;
-
+-- studentId, dormname, form, to
 EXEC p_makestudentaresident(224, 'White Hall', '12-Mar-2021', '30-Aug-2025');
 EXEC p_makestudentaresident(225, 'Hastings Hall', '02-Jun-2021', '03-Aug-2027');
 EXEC p_makestudentaresident(226, 'Meserve Hall', '12-Mar-2021', '01-Jan-2023');
@@ -144,4 +144,4 @@ SELECT
 FROM
     dorm;
 
-TRUNCATE TABLE resident;
+--TRUNCATE TABLE resident;
