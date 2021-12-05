@@ -295,7 +295,7 @@ CREATE TABLE resident (
 CREATE TABLE swipe_log (
     resident_id NUMBER,
     dorm_id     NUMBER,
-    swipe_time  DATE NOT NULL,
+    swipe_time  TIMESTAMP WITH LOCAL TIME ZONE NOT NULL,
     CONSTRAINT swipe_dorm_fk FOREIGN KEY ( dorm_id )
         REFERENCES dorm ( dorm_id )
             ON DELETE CASCADE,
