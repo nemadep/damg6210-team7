@@ -1,4 +1,6 @@
+
 /*Insert procedure for Utility Master Table*/
+/*Procedure call*/
 CREATE OR REPLACE PROCEDURE insertUtilityMaster (uname VARCHAR, udesc VARCHAR) IS
 BEGIN
     INSERT INTO utility_type_master (utility_name, utility_desc )
