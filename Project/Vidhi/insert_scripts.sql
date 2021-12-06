@@ -1,3 +1,80 @@
+
+/*Insert procedure for Utility Master Table*/
+/*Procedure call*/
+CREATE OR REPLACE PROCEDURE insertUtilityMaster (uname VARCHAR, udesc VARCHAR) IS
+BEGIN
+    INSERT INTO utility_type_master (utility_name, utility_desc )
+    VALUES (uname, udesc);
+END;
+/
+
+/*Insert Utility Master Data*/
+BEGIN
+insertUtilityMaster('Washer-101','This Washer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Washer-102','This Washer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Washer-103','This Washer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Washer-104','This Washer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Washer-105','This Washer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Dryer-101','This Dryer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Dryer-102','This Dryer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Dryer-103','This Dryer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Dryer-104','This Dryer is in Laundry Room 1 Ell Hall');
+insertUtilityMaster('Dryer-105','This Dryer is in Laundry Room 1 Ell Hall');
+
+insertUtilityMaster('Washer-201','This Washer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Washer-202','This Washer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Washer-203','This Washer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Washer-204','This Washer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Washer-205','This Washer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Dryer-201','This Dryer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Dryer-202','This Dryer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Dryer-203','This Dryer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Dryer-204','This Dryer is in Laundry Room 2 White Hall');
+insertUtilityMaster('Dryer-205','This Dryer is in Laundry Room 2 White Hall');
+
+insertUtilityMaster('Washer-301','This Washer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Washer-302','This Washer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Washer-303','This Washer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Washer-304','This Washer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Washer-305','This Washer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Dryer-301','This Dryer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Dryer-302','This Dryer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Dryer-303','This Dryer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Dryer-304','This Dryer is in Laundry Room 3 Hayden Hall');
+insertUtilityMaster('Dryer-305','This Dryer is in Laundry Room 3 Hayden Hall');
+
+insertUtilityMaster('Pool Table-101','This Pool table is in Clubhouse 1 Hurtig Hall');
+insertUtilityMaster('Pool Table-102','This Pool tableis in Clubhouse 1 Hurtig Hall');
+
+
+insertUtilityMaster('Pool Table-201','This Pool table is in Clubhouse 2 Nightingale Hall');
+insertUtilityMaster('Pool Table-202','This Pool table is in Clubhouse 2 Nightingale Hall');
+
+insertUtilityMaster('Table Tennis-101','This Table Tennis is in Clubhouse 1 Hurtig Hall');
+insertUtilityMaster('Table Tennis-102','This Table Tennis is in Clubhouse 1 Hurtig Hall');
+
+
+insertUtilityMaster('Table Tennis-201','This Table Tennis is in Clubhouse 2 Nightingale Hall');
+insertUtilityMaster('Table Tennis-202','This Table Tennis is in Clubhouse 2 Nightingale Hall');
+
+insertUtilityMaster('PS5-101','This PS5 is in Clubhouse 1 Hurtig Hall');
+insertUtilityMaster('PS5-102','This PS5 is in Clubhouse 1 Hurtig Hall');
+
+
+insertUtilityMaster('PS5-201','This PS5 is in Clubhouse 2 Nightingale Hall');
+insertUtilityMaster('PS5-202','This PS5 is in Clubhouse 2 Nightingale Hall');
+
+insertUtilityMaster('Swimming Pool-001','This Swimming Pool is in Burstein Hall');
+insertUtilityMaster('Swimming Pool-002','This Swimming Pool is in Burstein Hall');
+insertUtilityMaster('Swimming Pool-003','This Swimming Pool is in Burstein Hall');
+
+
+insertUtilityMaster('Gym-001','This Gym is in Meserve Hall');
+insertUtilityMaster('Gym-002','This Swimming Pool is in Lake Hall');
+insertUtilityMaster('Gym-003','This Swimming Pool is in Kerr Hall');
+END;
+/
+
 /*Insert procedure for Dorm Table*/
 CREATE OR REPLACE PROCEDURE insertDorm (dname VARCHAR, dcapacity NUMBER, dcity VARCHAR, dstate VARCHAR, dzip VARCHAR, daddress1 VARCHAR, daddress2 VARCHAR ) IS
 BEGIN
