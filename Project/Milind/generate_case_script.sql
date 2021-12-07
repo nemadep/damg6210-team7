@@ -1,16 +1,18 @@
+-- Generate case procedure
 create or replace PROCEDURE generateCase (
+
     dormID           NUMBER,
     caseType         VARCHAR,
     caseDescription  VARCHAR
+    
 ) IS
 
     is_available           NUMBER;
-    temp_dorm_id           NUMBER;
-    temp_dorm_name         VARCHAR2(50);
     e_dorm_valid           EXCEPTION;
 
 BEGIN
 
+    -- Check if dorm exists
     SELECT
         COUNT(*)
     INTO is_available
@@ -20,20 +22,13 @@ BEGIN
         dorm_id = dormID;
 
     IF is_available > 0 THEN
-        SELECT
-            dorm_id, dorm_name
-        INTO temp_dorm_id, temp_dorm_name
-        FROM
-            dorm
-        WHERE
-            dorm_id = dormID;
 
         INSERT INTO incident (
                 dorm_id,
                 case_type,
                 case_description
             ) VALUES (
-                temp_dorm_id,
+                dormID,
                 caseType,
                 caseDescription
             );
@@ -43,6 +38,7 @@ BEGIN
     END IF;
 
 EXCEPTION
+
     WHEN e_dorm_valid THEN
         RAISE_APPLICATION_ERROR(-20210, 'Invalid dorm!');
 END;
