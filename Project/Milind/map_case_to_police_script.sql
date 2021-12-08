@@ -94,7 +94,13 @@ EXEC mapCaseToPolice(38, 2, 'Open');
 
 EXEC mapCaseToPolice(13, 6, 'Open');
 
+
 SELECT
     *
 FROM
     police_incident_mapping;
+    
+    SELECT
+    *
+FROM
+    police;

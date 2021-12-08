@@ -37,7 +37,7 @@ BEGIN
 
     SELECT dorm_id into dormid
     FROM resident
-    WHERE resident_id = reisdentid;
+    WHERE resident_id = residentid;
 
     INSERT INTO utility (
         utility_id,
@@ -56,7 +56,7 @@ EXCEPTION
         dbms_output.put_line('Invalid resdient. Resident doesnt exists!');
     WHEN e_valid_utility THEN
         dbms_output.put_line('Invalid utility. Utility doesnt exists!');
-    WHEN OTHERS
+    WHEN OTHERS THEN
         dbms_output.put_line(SQLERRM);
 END;
 /
@@ -88,4 +88,5 @@ EXEC p_utility_entry(15, 5);
 EXEC p_utility_entry(20, 6);
 
 
+select * from utility_type_master;
 SELECT * FROM utility;

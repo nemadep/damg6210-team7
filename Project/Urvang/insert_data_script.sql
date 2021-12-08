@@ -123,7 +123,6 @@ BEGIN
     insertProctor('Ealasaid Sellstrom','(935) 5461920','esellstrom2o@lulu.com','8374 Shelley Hill','11-Feb-2001');
     insertProctor('Douglas Depport','(311) 1596507','ddepport2p@walmart.com','52887 Continental Crossing','24-Sep-1987');
     insertProctor('Tiertza Semken','(280) 5851079','tsemken2q@sakura.ne.jp','3 Autumn Leaf Plaza','20-Aug-1986');
-    insertProctor('Arv Gabbetis','(765) 7191725','agabbetis2r@blogs.com','9 Westridge Plaza','29-Oct-1999');
 END;
 /
 
@@ -159,3 +158,6 @@ BEGIN
     insertShiftMaster('C', TO_TIMESTAMP('16:00:00', 'hh24:mi:ss') , TO_TIMESTAMP('00:00:00', 'hh24:mi:ss'));
 END;
 /
+
+select * from shifts_type_master;
+--truncate table shifts_type_master;

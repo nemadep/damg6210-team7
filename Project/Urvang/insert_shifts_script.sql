@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION shiftcreated (
     sup    supervisor.supervisor_id%TYPE,
     dor    dorm.dorm_id%TYPE,
     sch    DATE,
-    shiftt dorm.dorm_id%TYPE
+    shiftt CHAR
 ) RETURN NUMBER AS
     successin             NUMBER := 0;
     proctorddonefortheday NUMBER := 0;
@@ -142,7 +142,7 @@ BEGIN
                         ROWNUM = 1;
                     
                     /*Calling the function to insert shift*/
-                    inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
+                   inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
 
                 END LOOP;
 
@@ -158,5 +158,10 @@ BEGIN
 END;
 /
 
+
+
 EXEC shiftscheduler(sysdate + 7);
+
+
 select * from shifts;
+select count(*) from proctor;
