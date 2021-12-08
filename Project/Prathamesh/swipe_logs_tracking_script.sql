@@ -26,9 +26,12 @@ EXEC p_swipe_me(2, 1);
 EXEC p_swipe_me(3, 2);
 EXEC p_swipe_me(4, 3);
 EXEC p_swipe_me(5, 9);
+
+/*
 SELECT
     *
 FROM
     swipe_log;
+*/
 
 --TRUNCATE TABLE swipe_log;

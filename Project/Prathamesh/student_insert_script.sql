@@ -129,6 +129,8 @@ EXEC p_makestudentaresident(227, 'Northeastern University Smith Hall', '14-Feb-2
 EXEC p_makestudentaresident(228, 'Hurtig Hall', '18-Dec-2021', '05-Sep-2029');
 EXEC p_makestudentaresident(229, 'Willis Hall', '12-Nov-2021', '03-Aug-2030');
 
+
+/*
 SELECT
     *
 FROM
@@ -143,5 +145,5 @@ SELECT
     *
 FROM
     dorm;
-
+*/
 --TRUNCATE TABLE resident;
