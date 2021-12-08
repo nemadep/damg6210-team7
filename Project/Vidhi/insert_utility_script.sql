@@ -37,7 +37,7 @@ BEGIN
 
     SELECT dorm_id into dormid
     FROM resident
-    WHERE resident_id = reisdentid;
+    WHERE resident_id = residentid;
 
     INSERT INTO utility (
         utility_id,
