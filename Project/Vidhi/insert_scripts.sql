@@ -2,6 +2,7 @@
 /*Insert procedure for Utility Master Table*/
 /*Procedure call*/
 CREATE OR REPLACE PROCEDURE insertUtilityMaster (uname VARCHAR, udesc VARCHAR) IS
+	alreadyInserted number := 0;
 BEGIN
 	SELECT COUNT(*) INTO alreadyInserted FROM utility_type_master utm WHERE uname = utm.utility_name;
     IF alreadyInserted = 0 then
@@ -82,6 +83,7 @@ END;
 
 /*Insert procedure for Dorm Table*/
 CREATE OR REPLACE PROCEDURE insertDorm (dname VARCHAR, dcapacity NUMBER, dcity VARCHAR, dstate VARCHAR, dzip VARCHAR, daddress1 VARCHAR, daddress2 VARCHAR ) IS
+	alreadyInserted number := 0;
 BEGIN
     SELECT COUNT(*) INTO alreadyInserted FROM dorm d WHERE dname = d.dorm_name AND dzip = d.dorm_zip;
     IF alreadyInserted = 0 then
@@ -123,6 +125,7 @@ END;
 
 /*Insert procedure for student Table*/
 CREATE OR REPLACE PROCEDURE insertStudent(sname VARCHAR, scontact VARCHAR, sdob DATE, sgender CHAR,  resident CHAR, permaddress VARCHAR2, semail VARCHAR2) IS
+	alreadyInserted number := 0;
 BEGIN
 	SELECT COUNT(*) INTO alreadyInserted FROM student s WHERE sname = s.student_name AND sdob = s.student_dob AND semail = s.student_email;
     IF alreadyInserted = 0 then

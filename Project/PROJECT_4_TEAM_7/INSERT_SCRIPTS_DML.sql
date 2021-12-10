@@ -130,14 +130,22 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         uname VARCHAR,
         udesc VARCHAR
     ) IS
+        alreadyInserted number := 0;
     BEGIN
-        INSERT INTO utility_type_master (
-            utility_name,
-            utility_desc
-        ) VALUES (
-            uname,
-            udesc
-        );
+        SELECT COUNT(*) INTO alreadyInserted 
+        FROM utility_type_master utm 
+        WHERE uname = utm.utility_name;
+        IF alreadyInserted = 0 then
+            INSERT INTO utility_type_master (
+                utility_name,
+                utility_desc
+            ) VALUES (
+                uname,
+                udesc
+            );
+        ELSE
+            dbms_output.put_line('----Utility type already exists----');
+        END IF; 
 
     END;
 
@@ -151,24 +159,32 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         daddress1 VARCHAR,
         daddress2 VARCHAR
     ) IS
+        alreadyInserted number := 0;
     BEGIN
-        INSERT INTO dorm (
-            dorm_name,
-            dorm_capacity,
-            dorm_city,
-            dorm_state,
-            dorm_zip,
-            dorm_address_line1,
-            dorm_address_line2
-        ) VALUES (
-            dname,
-            dcapacity,
-            dcity,
-            dstate,
-            dzip,
-            daddress1,
-            daddress2
-        );
+        SELECT COUNT(*) INTO alreadyInserted 
+        FROM dorm d 
+        WHERE dname = d.dorm_name AND dzip = d.dorm_zip;
+        IF alreadyInserted = 0 then
+            INSERT INTO dorm (
+                dorm_name,
+                dorm_capacity,
+                dorm_city,
+                dorm_state,
+                dorm_zip,
+                dorm_address_line1,
+                dorm_address_line2
+            ) VALUES (
+                dname,
+                dcapacity,
+                dcity,
+                dstate,
+                dzip,
+                daddress1,
+                daddress2
+            );
+        ELSE
+            dbms_output.put_line('----Dorm already exists----');
+        END IF;
 
     END;
 
@@ -181,25 +197,32 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         permaddress VARCHAR2,
         semail      VARCHAR2
     ) IS
+        alreadyInserted number := 0;
     BEGIN
-        INSERT INTO student (
-            student_name,
-            student_contact,
-            student_dob,
-            student_gender,
-            is_resident,
-            permanent_address,
-            student_email
-        ) VALUES (
-            sname,
-            scontact,
-            sdob,
-            sgender,
-            resident,
-            permaddress,
-            semail
-        );
-
+        SELECT COUNT(*) INTO alreadyInserted 
+        FROM student s 
+        WHERE sname = s.student_name AND sdob = s.student_dob AND semail = s.student_email;
+        IF alreadyInserted = 0 then
+            INSERT INTO student (
+                student_name,
+                student_contact,
+                student_dob,
+                student_gender,
+                is_resident,
+                permanent_address,
+                student_email
+            ) VALUES (
+                sname,
+                scontact,
+                sdob,
+                sgender,
+                resident,
+                permaddress,
+                semail
+            );
+        ELSE
+            dbms_output.put_line('----Student already exists----');
+        END IF;
     END;
 
     FUNCTION f_check_dorm_availability (
