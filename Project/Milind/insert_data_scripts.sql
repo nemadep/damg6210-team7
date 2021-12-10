@@ -1,8 +1,17 @@
 /*Insert procedure for Police Table*/
 CREATE OR REPLACE PROCEDURE insertPolice (policename VARCHAR, policegender CHAR, policecontact VARCHAR) IS
+alreadyInserted number := 0;
+
 BEGIN
-    INSERT INTO police (police_name, police_gender, police_contact)
-    VALUES (policename, policegender, policecontact);
+    SELECT COUNT(*) INTO alreadyInserted FROM police pol WHERE policename = pol.police_name AND policecontact = pol.police_contact;
+    
+    IF alreadyInserted = 0 THEN
+        INSERT INTO police (police_name, police_gender, police_contact)
+        VALUES (policename, policegender, policecontact);
+    ELSE
+        dbms_output.put_line('----Police already exists----');
+    END IF;
+    
 END;
 /
 
