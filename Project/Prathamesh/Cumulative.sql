@@ -1,3 +1,13 @@
+/*
+ ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗    ███████╗ ██████╗██████╗ ██╗██████╗ ████████╗
+██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝    ██╔════╝██╔════╝██╔══██╗██║██╔══██╗╚══██╔══╝
+██║     ██████╔╝█████╗  ███████║   ██║   █████╗      ███████╗██║     ██████╔╝██║██████╔╝   ██║   
+██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝      ╚════██║██║     ██╔══██╗██║██╔═══╝    ██║   
+╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗    ███████║╚██████╗██║  ██║██║██║        ██║   
+ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝    ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝        ╚═╝   
+                                                                                                 
+*/
+
 CREATE OR REPLACE FUNCTION func_is_table_created (
     find_table_name IN VARCHAR
 ) RETURN NUMBER AS
@@ -438,8 +448,16 @@ END;
 /
 
 
-/*Insert procedure for Utility Master Table*/
-/*Procedure call*/
+
+/*
+██╗███╗   ██╗███████╗███████╗██████╗ ████████╗    ███████╗ ██████╗██████╗ ██╗██████╗ ████████╗
+██║████╗  ██║██╔════╝██╔════╝██╔══██╗╚══██╔══╝    ██╔════╝██╔════╝██╔══██╗██║██╔══██╗╚══██╔══╝
+██║██╔██╗ ██║███████╗█████╗  ██████╔╝   ██║       ███████╗██║     ██████╔╝██║██████╔╝   ██║   
+██║██║╚██╗██║╚════██║██╔══╝  ██╔══██╗   ██║       ╚════██║██║     ██╔══██╗██║██╔═══╝    ██║   
+██║██║ ╚████║███████║███████╗██║  ██║   ██║       ███████║╚██████╗██║  ██║██║██║        ██║   
+╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝       ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝        ╚═╝   
+*/
+
 CREATE OR REPLACE PROCEDURE insertutilitymaster (
     uname VARCHAR,
     udesc VARCHAR
@@ -618,10 +636,6 @@ BEGIN
 END;
 /
 
-SELECT
-    *
-FROM
-    student;
 /*Insert Student Data*/
 BEGIN
     insertstudent('Jobyna Godilington', '(273) 5302377', '09-Oct-2001', 'F', 'FALSE',
@@ -2821,11 +2835,6 @@ EXEC p_guest_entry('Vidhi', '(442) 2345456', 4);
 
 EXEC p_guest_entry('Milind', '(562) 8765433', 5);
 
-SELECT
-    *
-FROM
-    guest;
-
 
 
 -- usage of sysdate instead of current_timestamp would give you UTC time
@@ -2859,7 +2868,6 @@ EXEC p_swipe_me(3, 2);
 EXEC p_swipe_me(4, 3);
 
 EXEC p_swipe_me(5, 9);
-
 
 /*Insert procedure for Shift Type Master Table*/
 CREATE OR REPLACE PROCEDURE insertshiftmaster (
@@ -3413,7 +3421,6 @@ BEGIN
 END;
 /
 
-
 -- Generate case procedure
 CREATE OR REPLACE PROCEDURE generatecase (
     dormid          NUMBER,
@@ -3470,10 +3477,6 @@ EXEC generatecase(8, 'Homicide', 'Francisco was found dead in his room. He was s
 
 EXEC generatecase(5, 'Theft', 'Personal items of residents stolen');
 
-SELECT
-    *
-FROM
-    incident;
 
 
 -- Mapping case to police procedure
@@ -3560,6 +3563,234 @@ EXEC mapcasetopolice(38, 2, 'Open');
 
 EXEC mapcasetopolice(13, 6, 'Open');
 
+
+
+
+
+/*
+██████╗ ███████╗██████╗  ██████╗ ██████╗ ████████╗     ██╗
+██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝    ███║
+██████╔╝█████╗  ██████╔╝██║   ██║██████╔╝   ██║       ╚██║
+██╔══██╗██╔══╝  ██╔═══╝ ██║   ██║██╔══██╗   ██║        ██║
+██║  ██║███████╗██║     ╚██████╔╝██║  ██║   ██║        ██║
+╚═╝  ╚═╝╚══════╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝        ╚═╝                                                          
+*/
+-- swipe logs ranking
+
+CREATE OR REPLACE VIEW v_log_stats AS
+    WITH resident_info AS (
+        SELECT
+            resident.resident_id AS resident_id,
+            student.student_name AS resident_name,
+            resident.to_date     AS resident_to_date
+        FROM
+            resident
+            LEFT JOIN student ON resident.student_id = student.student_id
+        WHERE
+            to_date(resident.to_date, 'DD-MM-YYYY') >= to_date(sysdate, 'DD-MM-YYYY')
+    ), resident_log_details AS (
+        SELECT
+            resident_info.resident_name,
+            swipe_log.swipe_time,
+            dorm.dorm_name
+        FROM
+            resident_info
+            LEFT JOIN swipe_log ON resident_info.resident_id = swipe_log.resident_id
+            LEFT JOIN dorm ON dorm.dorm_id = swipe_log.dorm_id
+        WHERE
+            swipe_log.swipe_time IS NOT NULL
+    ), resident_counts AS (
+        SELECT DISTINCT
+            resident_name,
+            COUNT(*)
+            OVER(PARTITION BY resident_name) AS swipe_count
+        FROM
+            resident_log_details
+    )
+    SELECT
+        resident_name,
+        swipe_count
+    FROM
+        (
+            SELECT
+                resident_name,
+                swipe_count,
+                ROW_NUMBER()
+                OVER(
+                    ORDER BY
+                        swipe_count DESC
+                ) AS count_rank
+            FROM
+                resident_counts
+            ORDER BY
+                swipe_count DESC
+        )
+    WHERE
+        count_rank <= 10;
+        
+
+
+
+/*
+██████╗ ███████╗██████╗  ██████╗ ██████╗ ████████╗    ██████╗ 
+██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝    ╚════██╗
+██████╔╝█████╗  ██████╔╝██║   ██║██████╔╝   ██║        █████╔╝
+██╔══██╗██╔══╝  ██╔═══╝ ██║   ██║██╔══██╗   ██║       ██╔═══╝ 
+██║  ██║███████╗██║     ╚██████╔╝██║  ██║   ██║       ███████╗
+╚═╝  ╚═╝╚══════╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝       ╚══════╝
+*/
+-- guests logs
+-- Shows which resident holds maximum guests.
+
+CREATE OR REPLACE VIEW v_guests_stats AS
+    WITH resident_info AS (
+        SELECT
+            resident.resident_id AS resident_id,
+            student.student_name AS resident_name,
+            resident.to_date     AS resident_to_date
+        FROM
+            resident
+            LEFT JOIN student ON resident.student_id = student.student_id
+        WHERE
+            to_date(resident.to_date, 'DD-MM-YYYY') >= to_date(sysdate, 'DD-MM-YYYY')
+    ), guest_count AS (
+        SELECT DISTINCT
+            resident_info.resident_name,
+            COUNT(*)
+            OVER(PARTITION BY resident_info.resident_id) AS count_guest
+        FROM
+            resident_info
+            LEFT JOIN guest ON resident_info.resident_id = guest.resident_id
+    )
+    SELECT
+        resident_name,
+        count_guest
+    FROM
+        (
+            SELECT
+                guest_count.*,
+                ROW_NUMBER()
+                OVER(
+                    ORDER BY
+                        count_guest DESC
+                ) row_number
+            FROM
+                guest_count
+            ORDER BY
+                count_guest DESC
+        )
+    WHERE
+        row_number <= 10;
+
+
+
+/*
+██████╗ ███████╗██████╗  ██████╗ ██████╗ ████████╗    ██████╗ 
+██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝    ╚════██╗
+██████╔╝█████╗  ██████╔╝██║   ██║██████╔╝   ██║        █████╔╝
+██╔══██╗██╔══╝  ██╔═══╝ ██║   ██║██╔══██╗   ██║        ╚═══██╗
+██║  ██║███████╗██║     ╚██████╔╝██║  ██║   ██║       ██████╔╝
+╚═╝  ╚═╝╚══════╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝       ╚═════╝ 
+*/
+
+-- Cases count 
+CREATE OR REPLACE VIEW v_no_of_cases AS
+    WITH cases_count AS (
+        SELECT
+            dorm_id,
+            COUNT(case_id) AS count_cases
+        FROM
+            incident
+        GROUP BY
+            dorm_id
+    ), info_dorm AS (
+        SELECT
+            c.dorm_id,
+            d.dorm_name,
+            c.count_cases
+        FROM
+                 dorm d
+            INNER JOIN cases_count c ON d.dorm_id = c.dorm_id
+    )
+    SELECT
+        dorm_id,
+        dorm_name,
+        count_cases
+    FROM
+        (
+            SELECT
+                info_dorm.*
+            FROM
+                info_dorm
+            ORDER BY
+                count_cases DESC
+        );
+    
+    
+
+/*
+██████╗ ███████╗██████╗  ██████╗ ██████╗ ████████╗    ██╗  ██╗
+██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝    ██║  ██║
+██████╔╝█████╗  ██████╔╝██║   ██║██████╔╝   ██║       ███████║
+██╔══██╗██╔══╝  ██╔═══╝ ██║   ██║██╔══██╗   ██║       ╚════██║
+██║  ██║███████╗██║     ╚██████╔╝██║  ██║   ██║            ██║
+╚═╝  ╚═╝╚══════╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝            ╚═╝
+*/
+--report to show top 10 utilities that are most accessed by residents.
+
+CREATE OR REPLACE VIEW v_utility_access AS
+    WITH utility_info AS (
+        SELECT DISTINCT
+            ( u.utility_id ),
+            um.utility_name
+        FROM
+            utility_type_master um
+            RIGHT JOIN utility             u ON um.utility_id = u.utility_id
+    ), utiltiy_access_count AS (
+        SELECT
+            utility_id,
+            COUNT(access_date) AS count_utiltity
+        FROM
+            utility
+        GROUP BY
+            utility_id
+    ), info_access AS (
+        SELECT
+            c.utility_id,
+            i.utility_name,
+            c.count_utiltity
+        FROM
+                 utility_info i
+            INNER JOIN utiltiy_access_count c ON i.utility_id = c.utility_id
+    )
+    SELECT
+        utility_id,
+        utility_name,
+        count_utiltity
+    FROM
+        (
+            SELECT
+                info_access.*,
+                ROW_NUMBER()
+                OVER(
+                    ORDER BY
+                        count_utiltity DESC
+                ) row_number
+            FROM
+                info_access
+            ORDER BY
+                count_utiltity DESC
+        )
+    WHERE
+        row_number <= 10;
+        
+        
+
+
+
+
+
+
 SELECT
     *
 FROM
@@ -3629,3 +3860,26 @@ SELECT
     *
 FROM
     utility_type_master;
+    
+    
+    
+    
+    
+    
+    
+SELECT
+    *
+FROM
+    v_log_stats;
+SELECT
+    *
+FROM
+    v_guests_stats;
+SELECT
+    *
+FROM
+    v_no_of_cases;
+SELECT
+    *
+FROM
+    v_utility_access;
