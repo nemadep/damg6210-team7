@@ -40,7 +40,7 @@ CREATE OR REPLACE PROCEDURE p_makestudentaresident (
     from_date  DATE,
     to_date    DATE
 ) IS
-
+    is_already_exists      NUMBER;
     is_available           NUMBER;
     temp_dorm_id           NUMBER;
     temp_is_dorm_available NUMBER;
@@ -48,56 +48,61 @@ CREATE OR REPLACE PROCEDURE p_makestudentaresident (
     e_dorm_valid EXCEPTION;
     already_resident EXCEPTION;
 BEGIN
-    SELECT
-        is_resident
-    INTO is_already_resident
-    FROM
-        student
-    WHERE
-        student_id = studuentid;
-
-    IF is_already_resident = 'TRUE' THEN
-        RAISE already_resident;
-    END IF;
-    SELECT
-        COUNT(*)
-    INTO is_available
-    FROM
-        dorm
-    WHERE
-        lower(dorm_name) = lower(dormname);
-
-    IF is_available > 0 THEN
+    SELECT COUNT(*) INTO is_already_exists FROM resident WHERE student_id = studuentid;
+    IF is_already_exists = 0 THEN
         SELECT
-            dorm_id
-        INTO temp_dorm_id
+            is_resident
+        INTO is_already_resident
+        FROM
+            student
+        WHERE
+            student_id = studuentid;
+    
+        IF is_already_resident = 'TRUE' THEN
+            RAISE already_resident;
+        END IF;
+        SELECT
+            COUNT(*)
+        INTO is_available
         FROM
             dorm
         WHERE
             lower(dorm_name) = lower(dormname);
-
-        temp_is_dorm_available := f_check_dorm_availability(temp_dorm_id, from_date, to_date);
-        IF temp_is_dorm_available = 1 THEN
-            INSERT INTO resident (
-                dorm_id,
-                student_id,
-                to_date,
-                from_date
-            ) VALUES (
-                temp_dorm_id,
-                studuentid,
-                to_date,
-                from_date
-            );
-
+    
+        IF is_available > 0 THEN
+            SELECT
+                dorm_id
+            INTO temp_dorm_id
+            FROM
+                dorm
+            WHERE
+                lower(dorm_name) = lower(dormname);
+    
+            temp_is_dorm_available := f_check_dorm_availability(temp_dorm_id, from_date, to_date);
+            IF temp_is_dorm_available = 1 THEN
+                INSERT INTO resident (
+                    dorm_id,
+                    student_id,
+                    to_date,
+                    from_date
+                ) VALUES (
+                    temp_dorm_id,
+                    studuentid,
+                    to_date,
+                    from_date
+                );
+    
+            ELSE
+                dbms_output.put_line('Dorm not available!');
+            END IF;
+    
         ELSE
-            dbms_output.put_line('Dorm not available!');
+            RAISE e_dorm_valid;
         END IF;
-
+        
     ELSE
-        RAISE e_dorm_valid;
+        dbms_output.put_line('Dorm already allocated!');
     END IF;
-
 EXCEPTION
     WHEN e_dorm_valid THEN
         dbms_output.put_line('Invalid dorm!');
