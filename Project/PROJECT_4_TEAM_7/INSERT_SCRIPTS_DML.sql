@@ -972,7 +972,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
 
     EXCEPTION
         WHEN e_case_already_mapped THEN
-            raise_application_error(-20310, 'Case already mapped to police!');
+            dbms_output.put_line('Case already mapped to police!');
         WHEN e_police_valid THEN
             raise_application_error(-20320, 'Invalid police!');
         WHEN e_case_valid THEN
