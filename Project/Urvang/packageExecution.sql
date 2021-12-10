@@ -3601,3 +3601,76 @@ EXEC insertdormmanagementdata.mapcasetopolice(24, 1, 'Open');
 EXEC insertdormmanagementdata.mapcasetopolice(38, 2, 'Open');
 
 EXEC insertdormmanagementdata.mapcasetopolice(13, 6, 'Open');
+
+
+SELECT
+    *
+FROM
+    dorm;
+
+SELECT
+    *
+FROM
+    guest;
+
+SELECT
+    *
+FROM
+    police;
+
+SELECT
+    *
+FROM
+    incident;
+
+SELECT
+    *
+FROM
+    police_incident_mapping;
+
+SELECT
+    *
+FROM
+    proctor;
+
+SELECT
+    *
+FROM
+    resident;
+
+SELECT
+    *
+FROM
+    shifts;
+
+SELECT
+    *
+FROM
+    shifts_type_master;
+
+SELECT
+    *
+FROM
+    student;
+
+SELECT
+    *
+FROM
+    supervisor;
+
+SELECT
+    *
+FROM
+    swipe_log;
+
+SELECT
+    *
+FROM
+    utility;
+
+SELECT
+    *
+FROM
+    utility_type_master;
+    
+    

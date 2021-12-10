@@ -1,4 +1,4 @@
-CREATE PACKAGE insertdormmanagementdata AS
+CREATE OR REPLACE PACKAGE insertdormmanagementdata AS
     PROCEDURE insertutilitymaster (
         uname VARCHAR,
         udesc VARCHAR
@@ -68,7 +68,7 @@ CREATE PACKAGE insertdormmanagementdata AS
 
     PROCEDURE shiftscheduler (
         schdate DATE,
-        tillay NUMBER
+        tillday NUMBER
     );
 
     PROCEDURE insertpolice (
