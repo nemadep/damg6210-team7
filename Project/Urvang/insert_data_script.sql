@@ -1,24 +1,44 @@
+SET SERVEROUTPUT ON;
+
 /*Insert procedure for Shift Type Master Table*/
 CREATE OR REPLACE PROCEDURE insertShiftMaster (stype CHAR, sstart TIMESTAMP, send TIMESTAMP) IS
+alreadyInserted number := 0;
 BEGIN
-    INSERT INTO shifts_type_master (shift_type, start_time, end_time)
-    VALUES (stype, sstart, send);
+    SELECT COUNT(*) INTO alreadyInserted FROM shifts_type_master stm WHERE stype = stm.shift_type;
+    IF alreadyInserted != 0 then
+        INSERT INTO shifts_type_master (shift_type, start_time, end_time)
+        VALUES (stype, sstart, send);
+    ELSE
+        dbms_output.put_line('----Shift type already exists----');
+    END IF;    
 END;
 /
 
 /*Insert procedure for Proctor Table*/
 CREATE OR REPLACE PROCEDURE insertProctor (pname VARCHAR, pcontact VARCHAR, pemail VARCHAR, paddress VARCHAR, pdob VARCHAR) IS
+alreadyInserted number := 0;
 BEGIN
-    INSERT INTO proctor (proctor_name, proctor_contact, proctor_email, proctor_address, proctor_dob)
-    VALUES (pname, pcontact, pemail, paddress, pdob);
+    SELECT COUNT(*) INTO alreadyInserted FROM proctor proc WHERE pname = proc.proctor_name AND pcontact = proc.proctor_contact;
+    IF alreadyInserted != 0 THEN
+        INSERT INTO proctor (proctor_name, proctor_contact, proctor_email, proctor_address, proctor_dob)
+        VALUES (pname, pcontact, pemail, paddress, pdob);
+    ELSE
+        dbms_output.put_line('----Proctor already exists----');
+    END IF;
 END;
 /
 
 /*Insert procedure for Supervisors Table*/
 CREATE OR REPLACE PROCEDURE insertSupervisor (supname VARCHAR, supaddress VARCHAR, supcontact VARCHAR, supemail VARCHAR) IS
+alreadyInserted number := 0;
 BEGIN
-    INSERT INTO supervisor (supervisor_name, supervisor_address, supervisor_contact, supervisor_email)
-    VALUES (supname, supaddress, supcontact, supemail);
+    SELECT COUNT(*) INTO alreadyInserted FROM supervisor sup WHERE supname = sup.supervisor_name AND supcontact = sup.supervisor_contact;
+    IF alreadyInserted != 0 THEN
+        INSERT INTO supervisor (supervisor_name, supervisor_address, supervisor_contact, supervisor_email)
+        VALUES (supname, supaddress, supcontact, supemail);
+    ELSE
+        dbms_output.put_line('----Supervisor already exists----');
+    END IF;
 END;
 /
 
