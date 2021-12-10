@@ -5,7 +5,7 @@ CREATE OR REPLACE PROCEDURE insertShiftMaster (stype CHAR, sstart TIMESTAMP, sen
 alreadyInserted number := 0;
 BEGIN
     SELECT COUNT(*) INTO alreadyInserted FROM shifts_type_master stm WHERE stype = stm.shift_type;
-    IF alreadyInserted != 0 then
+    IF alreadyInserted = 0 then
         INSERT INTO shifts_type_master (shift_type, start_time, end_time)
         VALUES (stype, sstart, send);
     ELSE
@@ -19,7 +19,7 @@ CREATE OR REPLACE PROCEDURE insertProctor (pname VARCHAR, pcontact VARCHAR, pema
 alreadyInserted number := 0;
 BEGIN
     SELECT COUNT(*) INTO alreadyInserted FROM proctor proc WHERE pname = proc.proctor_name AND pcontact = proc.proctor_contact;
-    IF alreadyInserted != 0 THEN
+    IF alreadyInserted = 0 THEN
         INSERT INTO proctor (proctor_name, proctor_contact, proctor_email, proctor_address, proctor_dob)
         VALUES (pname, pcontact, pemail, paddress, pdob);
     ELSE
@@ -33,7 +33,7 @@ CREATE OR REPLACE PROCEDURE insertSupervisor (supname VARCHAR, supaddress VARCHA
 alreadyInserted number := 0;
 BEGIN
     SELECT COUNT(*) INTO alreadyInserted FROM supervisor sup WHERE supname = sup.supervisor_name AND supcontact = sup.supervisor_contact;
-    IF alreadyInserted != 0 THEN
+    IF alreadyInserted = 0 THEN
         INSERT INTO supervisor (supervisor_name, supervisor_address, supervisor_contact, supervisor_email)
         VALUES (supname, supaddress, supcontact, supemail);
     ELSE

@@ -378,16 +378,30 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         sstart TIMESTAMP,
         send   TIMESTAMP
     ) IS
+        alreadyinserted NUMBER := 0;
     BEGIN
-        INSERT INTO shifts_type_master (
-            shift_type,
-            start_time,
-            end_time
-        ) VALUES (
-            stype,
-            sstart,
-            send
-        );
+        SELECT
+            COUNT(*)
+        INTO alreadyinserted
+        FROM
+            shifts_type_master stm
+        WHERE
+            stype = stm.shift_type;
+
+        IF alreadyinserted = 0 THEN
+            INSERT INTO shifts_type_master (
+                shift_type,
+                start_time,
+                end_time
+            ) VALUES (
+                stype,
+                sstart,
+                send
+            );
+
+        ELSE
+            dbms_output.put_line('----Shift type already exists----');
+        END IF;
 
     END;
 
@@ -398,20 +412,35 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         paddress VARCHAR,
         pdob     VARCHAR
     ) IS
+        alreadyinserted NUMBER := 0;
     BEGIN
-        INSERT INTO proctor (
-            proctor_name,
-            proctor_contact,
-            proctor_email,
-            proctor_address,
-            proctor_dob
-        ) VALUES (
-            pname,
-            pcontact,
-            pemail,
-            paddress,
-            pdob
-        );
+        SELECT
+            COUNT(*)
+        INTO alreadyinserted
+        FROM
+            proctor proc
+        WHERE
+                pname = proc.proctor_name
+            AND pcontact = proc.proctor_contact;
+
+        IF alreadyinserted = 0 THEN
+            INSERT INTO proctor (
+                proctor_name,
+                proctor_contact,
+                proctor_email,
+                proctor_address,
+                proctor_dob
+            ) VALUES (
+                pname,
+                pcontact,
+                pemail,
+                paddress,
+                pdob
+            );
+
+        ELSE
+            dbms_output.put_line('----Proctor already exists----');
+        END IF;
 
     END;
 
@@ -421,18 +450,33 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         supcontact VARCHAR,
         supemail   VARCHAR
     ) IS
+        alreadyinserted NUMBER := 0;
     BEGIN
-        INSERT INTO supervisor (
-            supervisor_name,
-            supervisor_address,
-            supervisor_contact,
-            supervisor_email
-        ) VALUES (
-            supname,
-            supaddress,
-            supcontact,
-            supemail
-        );
+        SELECT
+            COUNT(*)
+        INTO alreadyinserted
+        FROM
+            supervisor sup
+        WHERE
+                supname = sup.supervisor_name
+            AND supcontact = sup.supervisor_contact;
+
+        IF alreadyinserted = 0 THEN
+            INSERT INTO supervisor (
+                supervisor_name,
+                supervisor_address,
+                supervisor_contact,
+                supervisor_email
+            ) VALUES (
+                supname,
+                supaddress,
+                supcontact,
+                supemail
+            );
+
+        ELSE
+            dbms_output.put_line('----Supervisor already exists----');
+        END IF;
 
     END;
 
@@ -649,7 +693,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                 END LOOP;
             END LOOP;
         ELSE
-            raise_application_error(-20004, 'Shifts already created');
+            dbms_output.put_line('---Shifts already created---');
         END IF;
 
     /*Close the cursors*/
@@ -761,7 +805,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                 END LOOP;
 
             ELSE
-                raise_application_error(-20004, 'Shifts already created');
+                dbms_output.put_line('---Shifts already created---');
             END IF;
 
         END LOOP;
@@ -901,6 +945,7 @@ END;
 /
 
 --PACKAGE EXECUTION
+SET SERVEROUTPUT ON;
 
 EXEC insertdormmanagementdata.insertutilitymaster('Washer-101', 'This Washer is in Laundry Room 1 Ell Hall');
 
