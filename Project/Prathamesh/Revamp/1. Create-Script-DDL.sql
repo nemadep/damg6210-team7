@@ -543,30 +543,6 @@ BEGIN
                 dual;
         END;!';
     dbms_output.put_line('Created : TRIGGER - TRI_STUDENT');
-    EXECUTE IMMEDIATE q'!CREATE OR REPLACE TRIGGER t_resident_addition AFTER
-            UPDATE ON student
-            REFERENCING
-                    NEW AS new
-                    OLD AS old
-            FOR EACH ROW
-        DECLARE
-            l_transaction VARCHAR2(10);
-        BEGIN
-            IF
-                ( ( :old.is_resident <> :new.is_resident ) OR (
-                    :old.is_resident IS NULL
-                    AND :new.is_resident IS NOT NULL
-                ) OR (
-                    :old.is_resident IS NOT NULL
-                    AND :new.is_resident IS NULL
-                ) )
-                AND :new.is_resident = 'TRUE'
-            THEN
-                BEGIN
-                    insertdormmanagementdata.p_resident_addition(:new.student_id, :new.is_resident);
-                END;
-            END IF;
-        END;!';
 END;
 /
 

@@ -69,7 +69,7 @@ CREATE OR REPLACE PROCEDURE shiftscheduler (
     schdate DATE
 ) IS
 
-    datecount     NUMBER := 0;
+    datecount       NUMBER := 0;
     CURSOR shifttypes IS
     SELECT
         shift_type
@@ -94,14 +94,57 @@ CREATE OR REPLACE PROCEDURE shiftscheduler (
     FROM
         dorm;
 
-    supid         supervisor.supervisor_id%TYPE;
-    procid        proctor.proctor_id%TYPE;
-    did           NUMBER;
-    stype         CHAR;
-    inputcomplete NUMBER := 0;
+    supid           supervisor.supervisor_id%TYPE;
+    procid          proctor.proctor_id%TYPE;
+    did             NUMBER;
+    stype           CHAR;
+    inputcomplete   NUMBER := 0;
+    proctorcount    NUMBER := 0;
+    supervisorcount NUMBER := 0;
+    dormcount       NUMBER := 0;
+    shiftmaster     NUMBER := 0;
+    no_proctors EXCEPTION;
+    no_supervisors EXCEPTION;
+    no_dorm EXCEPTION;
+    no_shift_master EXCEPTION;
 BEGIN
     
     /* Open the cursors */
+
+    SELECT
+        COUNT(*)
+    INTO proctorcount
+    FROM
+        proctor;
+
+    SELECT
+        COUNT(*)
+    INTO supervisorcount
+    FROM
+        supervisor;
+
+    SELECT
+        COUNT(*)
+    INTO dormcount
+    FROM
+        dorm;
+
+    SELECT
+        COUNT(*)
+    INTO shiftmaster
+    FROM
+        shifts_type_master;
+
+    IF proctorcount = 0 THEN
+        RAISE no_proctors;
+    ELSIF supervisorcount = 0 THEN
+        RAISE no_supervisors;
+    ELSIF dormcount = 0 THEN
+        RAISE no_dorm;
+    ELSIF shiftmaster = 0 THEN
+        RAISE no_shift_master;
+    END IF;
+
     OPEN proctors;
     OPEN supervisors;
     
@@ -143,13 +186,26 @@ BEGIN
                     )
                 WHERE
                     ROWNUM = 1;
-                    
+
+                DECLARE
+                    proctor_limit EXCEPTION;
+                    shift_already_done EXCEPTION;
+                BEGIN   
                     /*Calling the function to insert shift*/
-                inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
-                
-                if inputcomplete = 2 then
-                    dbms_output.put_line('Shift already scheduled for given date and dorm');
-                end if;
+                    inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
+
+                    IF inputcomplete = 2 THEN
+                        RAISE shift_already_done;
+                    ELSIF inputcomplete = 0 THEN
+                        RAISE proctor_limit;
+                    END IF;
+
+                EXCEPTION
+                    WHEN proctor_limit THEN
+                        dbms_output.put_line('Selected proctor already crossed the daily work limit');
+                    WHEN shift_already_done THEN
+                        dbms_output.put_line('Shift already scheduled for given date and dorm');
+                END;
 
             END LOOP;
 
@@ -159,14 +215,25 @@ BEGIN
     /*Close the cursors*/
     CLOSE proctors;
     CLOSE supervisors;
+EXCEPTION
+    WHEN no_proctors THEN
+        dbms_output.put_line('No proctor data found');
+    WHEN no_supervisors THEN
+        dbms_output.put_line('No supervisor data found');
+    WHEN no_dorm THEN
+        dbms_output.put_line('No dorm data found');
+    WHEN no_shift_master THEN
+        dbms_output.put_line('No shift master data found');
 END;
 /
 
-EXEC shiftscheduler(sysdate + 7);
+EXEC shiftscheduler(sysdate + 10);
 
 SELECT
     *
 FROM
     shifts;
-    
-delete from shifts;
+
+DELETE FROM shifts;
+
+DELETE FROM proctor;

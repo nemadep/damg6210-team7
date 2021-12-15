@@ -7,11 +7,11 @@ BEGIN
     Procedure - create_user
     Arguments - @username, @password
 */
-    manage_users_and_access.create_user('sysadmin1', 'Abc@1234');
-    manage_users_and_access.create_user('supervisor1', 'Abc@1234');
-    manage_users_and_access.create_user('resident1', 'Abc@1234');
-    manage_users_and_access.create_user('proctor1', 'Abc@1234');
-    manage_users_and_access.create_user('police1', 'Abc@1234');
+    manage_users_and_access.create_user('sysadmin1', 'Abc@12345');
+    manage_users_and_access.create_user('supervisor1', 'Abc@12345');
+    manage_users_and_access.create_user('resident1', 'Abc@12345');
+    manage_users_and_access.create_user('proctor1', 'Abc@12345');
+    manage_users_and_access.create_user('police1', 'Abc@12345');
     
     dbms_output.put_line('Users created successfully!!');
     dbms_output.put_line('Creating ROLE - SYSADMIN');
@@ -180,3 +180,14 @@ BEGIN
     dbms_output.put_line('Roles allocated successfully...');
 END;
 /
+
+
+select * from dba_users;
+
+
+SELECT
+            COUNT(*)
+        FROM
+            dba_users
+        WHERE
+            lower(username) ='sysadmin1';
