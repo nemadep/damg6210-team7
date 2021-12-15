@@ -1,6 +1,18 @@
 SET SERVEROUTPUT ON;
 
 /*
+    In case to kill the ongoing session from ADMIN
+    1. select * from v$session;
+    2. ALTER SYSTEM KILL SESSION '<SID>, <SERIAL>';
+    
+    
+    SELECT * FROM DBA_ROLES;
+    SELECT * FROM DBA_USERS;
+    SELECT * FROM DBA_TAB_PRIVS;
+    select * from DBA_CONNECT_ROLE_GRANTEES;
+*/
+
+/*
     Steps to create a session - 
     1. Create a USER
     2. Grant a ROLE or priveledges to the user
@@ -200,23 +212,3 @@ BEGIN
     dbms_output.put_line('Roles allocated successfully...');
 END;
 /
-
-
-
-
-
-
-/*
-    In case to kill the ongoing session from ADMIN
-    1. select * from v$session;
-    2. ALTER SYSTEM KILL SESSION '<SID>, <SERIAL>';
-    
-    
-    SELECT * FROM DBA_ROLES;
-    SELECT * FROM DBA_USERS;
-    SELECT * FROM DBA_TAB_PRIVS;
-    select * from DBA_CONNECT_ROLE_GRANTEES;
-*/
-
-
-
