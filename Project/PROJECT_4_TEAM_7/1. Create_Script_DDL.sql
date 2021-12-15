@@ -501,7 +501,9 @@ BEGIN
                 dual;
         END;!';
     dbms_output.put_line('Created : TRIGGER - TRI_STUDENT');
+    
 END;
 /
 
 EXEC p_intial_reset();
+
