@@ -69,24 +69,11 @@ CREATE OR REPLACE PROCEDURE shiftscheduler (
     schdate DATE
 ) IS
 
-    datecount       NUMBER := 0;
     CURSOR shifttypes IS
     SELECT
         shift_type
     FROM
         shifts_type_master;
-
-    CURSOR proctors IS
-    SELECT
-        proctor_id
-    FROM
-        proctor;
-
-    CURSOR supervisors IS
-    SELECT
-        supervisor_id
-    FROM
-        supervisor;
 
     CURSOR dormids IS
     SELECT
@@ -94,6 +81,7 @@ CREATE OR REPLACE PROCEDURE shiftscheduler (
     FROM
         dorm;
 
+    datecount       NUMBER := 0;
     supid           supervisor.supervisor_id%TYPE;
     procid          proctor.proctor_id%TYPE;
     did             NUMBER;
@@ -145,9 +133,6 @@ BEGIN
         RAISE no_shift_master;
     END IF;
 
-    OPEN proctors;
-    OPEN supervisors;
-    
         /*loop over all the dorms in the cursor*/
     FOR did IN dormids LOOP
             /*loop over all the types of shift*/
@@ -212,9 +197,6 @@ BEGIN
         END LOOP;
     END LOOP;
 
-    /*Close the cursors*/
-    CLOSE proctors;
-    CLOSE supervisors;
 EXCEPTION
     WHEN no_proctors THEN
         dbms_output.put_line('No proctor data found');
