@@ -23,6 +23,9 @@ CREATE OR REPLACE VIEW proctorwithmaxshifts AS
                 JOIN shift_dist distribution ON proc_details.proctor_id = distribution.proctor_id
             ORDER BY
                 shift_count DESC
-        )
-    WHERE
-        ROWNUM <= 10;
+        );
+
+SELECT
+    *
+FROM
+    proctorwithmaxshifts;

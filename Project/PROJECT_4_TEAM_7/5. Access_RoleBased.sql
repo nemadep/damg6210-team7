@@ -1,4 +1,25 @@
 SET SERVEROUTPUT ON;
+
+/*
+    Steps to create a session - 
+    1. Create a USER
+    2. Grant a ROLE or priveledges to the user
+    3. Create a session
+
+    Following is the example of creation of USER and allocating the ROLE:
+    1. CREATE USER sysadmin1 IDENTIFIED BY "Demo@DMDD6210";
+    2. GRANT r_sysadmin TO sysadmin1;
+    3. GRANT CREATE SESSION TO sysadmin1;
+    
+    
+    Steps to add or login into a user are - 
+    1. Right click on the custer > Properties > Change Name, UserName, Password. 
+    DONE!
+    
+    You can access the tables by the prefixing the name of the owner.
+*/
+
+
 BEGIN
     dbms_output.put_line('***************************');
     dbms_output.put_line('Creating Users');
@@ -8,12 +29,11 @@ BEGIN
     Procedure - create_user
     Arguments - @username, @password
 */
-    manage_users_and_access.create_user('sysadmin1', 'Abc@12345');
-    manage_users_and_access.create_user('supervisor1', 'Abc@12345');
-    manage_users_and_access.create_user('resident1', 'Abc@12345');
-    manage_users_and_access.create_user('proctor1', 'Abc@12345');
-    manage_users_and_access.create_user('police1', 'Abc@12345');
-    
+    manage_users_and_access.create_user('sysadmin1', 'Demo@DMDD6210');
+    manage_users_and_access.create_user('supervisor1', 'Demo@DMDD6210');
+    manage_users_and_access.create_user('resident1', 'Demo@DMDD6210');
+    manage_users_and_access.create_user('proctor1', 'Demo@DMDD6210');
+    manage_users_and_access.create_user('police1', 'Demo@DMDD6210');
     dbms_output.put_line('Users created successfully!!');
     dbms_output.put_line('Creating ROLE - SYSADMIN');
     manage_users_and_access.create_role('r_sysadmin');
@@ -102,7 +122,6 @@ BEGIN
     manage_users_and_access.manage_role_access('dorm', 'r_resident', 'SELECT');
     manage_users_and_access.manage_role_access('utility', 'r_resident', 'SELECT');
     manage_users_and_access.manage_role_access('utility_type_master', 'r_resident', 'SELECT');
-    
     dbms_output.put_line('***************************');
     dbms_output.put_line('Access Granted to - RESIDENT');
     dbms_output.put_line('TABLE: STUDENT  - SELECT');
@@ -182,6 +201,22 @@ BEGIN
 END;
 /
 
-SELECT * FROM DBA_ROLES;
-SELECT * FROM DBA_USERS;
+
+
+
+
+
+/*
+    In case to kill the ongoing session from ADMIN
+    1. select * from v$session;
+    2. ALTER SYSTEM KILL SESSION '<SID>, <SERIAL>';
+    
+    
+    SELECT * FROM DBA_ROLES;
+    SELECT * FROM DBA_USERS;
+    SELECT * FROM DBA_TAB_PRIVS;
+    select * from DBA_CONNECT_ROLE_GRANTEES;
+*/
+
+
 

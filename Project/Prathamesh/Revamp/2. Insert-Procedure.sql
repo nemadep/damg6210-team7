@@ -106,6 +106,8 @@ CREATE OR REPLACE PACKAGE insertdormmanagementdata AS
         residentid IN NUMBER
     ) RETURN NUMBER;
 
+    FUNCTION f_get_first_available_dorm RETURN NUMBER;
+
     PROCEDURE p_guest_entry (
         guestname    VARCHAR,
         guestcontact VARCHAR,
@@ -116,8 +118,6 @@ CREATE OR REPLACE PACKAGE insertdormmanagementdata AS
         residentid NUMBER,
         dormid     NUMBER
     );
-
-    FUNCTION f_get_first_available_dorm RETURN NUMBER;
 
     PROCEDURE p_resident_addition (
         studentid  NUMBER,
@@ -149,7 +149,7 @@ CREATE OR REPLACE PACKAGE manage_users_and_access AS
     );
 
     FUNCTION f_is_user_already_created (
-        userName VARCHAR
+        username VARCHAR
     ) RETURN NUMBER;
 
 END;
