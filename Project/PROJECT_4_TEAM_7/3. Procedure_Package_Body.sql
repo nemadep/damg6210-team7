@@ -884,7 +884,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                             shift_already_done EXCEPTION;
                         BEGIN   
                     /*Calling the function to insert shift*/
-                            inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
+                            inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate + schday, stype.shift_type);
 
                             IF inputcomplete = 2 THEN
                                 RAISE shift_already_done;
