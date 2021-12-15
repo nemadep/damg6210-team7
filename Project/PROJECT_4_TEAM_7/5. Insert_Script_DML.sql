@@ -3351,11 +3351,26 @@ BEGIN
     insertdormmanagementdata.insertpolice('Zaccaria Ondrasek', 'M', '(454) 4978252');
     insertdormmanagementdata.generatecase(1, 'Shooting', 'Two shots fired inside the dorm');
     insertdormmanagementdata.generatecase(5, 'Cybercrime', 'Account hacked');
-    insertdormmanagementdata.generatecase(12, 'Vandalism', 'Someone is breaking the dorm windows');
     insertdormmanagementdata.generatecase(9, 'Theft', 'Armed robbery at Dorm');
     insertdormmanagementdata.generatecase(19, 'Suicide', 'John shot himself');
     insertdormmanagementdata.generatecase(8, 'Homicide', 'Francisco was found dead in his room. He was stabbed!');
     insertdormmanagementdata.generatecase(5, 'Theft', 'Personal items of residents stolen');
+    insertdormmanagementdata.generatecase(8, 'Cybercrime', 'Account of a resident hacked');
+    insertdormmanagementdata.generatecase(1, 'Drug possession', 'One resident found taking drugs');
+    insertdormmanagementdata.generatecase(5, 'Vandalism', 'Someone is breaking the dorm windows');
+    insertdormmanagementdata.generatecase(8, 'Drug possession', 'Tim found taking drugs');
+    insertdormmanagementdata.generatecase(12, 'Vandalism', 'Someone is breaking the dorm property');
+    insertdormmanagementdata.generatecase(9, 'Theft', 'Robbery at Dorm');
+    insertdormmanagementdata.generatecase(8, 'Suicide', 'Fred jumped from sixth floor!');
+    insertdormmanagementdata.generatecase(5, 'Murder', 'Someone killed two residents outside the dorm');
+    insertdormmanagementdata.generatecase(1, 'Theft', 'Expensive items found stolen');
+    insertdormmanagementdata.generatecase(5, 'Drug possession', 'Two residents found taking drugs');
+    insertdormmanagementdata.generatecase(8, 'Murder attempt', 'Janet tried to stab Karen');
+    insertdormmanagementdata.generatecase(12, 'Suicide', 'David shot himself');
+    insertdormmanagementdata.generatecase(9, 'Theft', 'Personal items of a resident found stolen');
+    insertdormmanagementdata.generatecase(5, 'Theft', 'Armed robbery at dorm');
+    insertdormmanagementdata.generatecase(9, 'Murder', 'David killed Sarah');
+
     insertdormmanagementdata.mapcasetopolice(3, 4, 'Open');
     insertdormmanagementdata.mapcasetopolice(8, 7, 'Open');
     insertdormmanagementdata.mapcasetopolice(24, 1, 'Open');

@@ -76,7 +76,7 @@ BEGIN
     END;
 
     dbms_output.put_line('***************************');
-    dbms_output.put_line(get_available_dorm(1, sysdate));
+    --dbms_output.put_line(get_available_dorm(1, sysdate));
 EXCEPTION
     WHEN no_data_found THEN
         dbms_output.put_line(sqlerrm);
