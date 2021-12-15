@@ -9,12 +9,23 @@ CREATE OR REPLACE FUNCTION shiftcreated (
 ) RETURN NUMBER AS
     successin             NUMBER := 0;
     proctorddonefortheday NUMBER := 0;
+    shiftexists           NUMBER := 0;
 BEGIN
     /*  
         Check if a shift is already assigned to a proctor for the given day.
         If it is assigned return from the function.
         If not insert a new shift.
     */
+    SELECT
+        COUNT(*)
+    INTO shiftexists
+    FROM
+        shifts sh
+    WHERE
+            shiftt = sh.shift_type
+        AND dor = sh.dorm_id
+        AND to_date(sh.shift_date) = to_date(sch);
+
     SELECT
         COUNT(*)
     INTO proctorddonefortheday
@@ -24,27 +35,30 @@ BEGIN
             proctor_id = proc
         AND shift_date = sch;
 
-    dbms_output.put_line(proctorddonefortheday);
-    IF proctorddonefortheday = 0 THEN
-        INSERT INTO shifts (
-            shift_type,
-            proctor_id,
-            shift_date,
-            create_at,
-            update_at,
-            supervisor_id,
-            dorm_id
-        ) VALUES (
-            shiftt,
-            proc,
-            sch,
-            sysdate,
-            sysdate,
-            sup,
-            dor
-        );
+    IF shiftexists = 0 THEN
+        IF proctorddonefortheday = 0 THEN
+            INSERT INTO shifts (
+                shift_type,
+                proctor_id,
+                shift_date,
+                create_at,
+                update_at,
+                supervisor_id,
+                dorm_id
+            ) VALUES (
+                shiftt,
+                proc,
+                sch,
+                sysdate,
+                sysdate,
+                sup,
+                dor
+            );
 
-        successin := 1;
+            successin := 1;
+        END IF;
+    ELSE
+        successin := 2;
     END IF;
 
     RETURN successin;
@@ -91,69 +105,56 @@ BEGIN
     OPEN proctors;
     OPEN supervisors;
     
-    /*  
-        Check if shifts are already scheduled for given date.
-        If not created generate new shifts for the given date
-        else raise a warning and exit.
-    */
-    SELECT
-        COUNT(*)
-    INTO datecount
-    FROM
-        shifts
-    WHERE
-        to_date(shift_date) = to_date(schdate);
-    dbms_output.put_line(datecount);
-    IF datecount = 0 THEN
         /*loop over all the dorms in the cursor*/
-        FOR did IN dormids LOOP
+    FOR did IN dormids LOOP
             /*loop over all the types of shift*/
-            FOR stype IN shifttypes LOOP
-                inputcomplete := 0;
+        FOR stype IN shifttypes LOOP
+            inputcomplete := 0;
                 /*Try to insert a unique */
-                WHILE inputcomplete = 0 LOOP
+            WHILE inputcomplete = 0 LOOP
                     /*Picking a random supervisor for the table*/
-                    SELECT
-                        supervisor_id
-                    INTO supid
-                    FROM
-                        (
-                            SELECT
-                                supervisor_id
-                            FROM
-                                supervisor
-                            ORDER BY
-                                dbms_random.value
-                        )
-                    WHERE
-                        ROWNUM = 1;
+                SELECT
+                    supervisor_id
+                INTO supid
+                FROM
+                    (
+                        SELECT
+                            supervisor_id
+                        FROM
+                            supervisor
+                        ORDER BY
+                            dbms_random.value
+                    )
+                WHERE
+                    ROWNUM = 1;
                     
                     /*Picking a random proctor for the table*/
-                    SELECT
-                        proctor_id
-                    INTO procid
-                    FROM
-                        (
-                            SELECT
-                                proctor_id
-                            FROM
-                                proctor
-                            ORDER BY
-                                dbms_random.value
-                        )
-                    WHERE
-                        ROWNUM = 1;
+                SELECT
+                    proctor_id
+                INTO procid
+                FROM
+                    (
+                        SELECT
+                            proctor_id
+                        FROM
+                            proctor
+                        ORDER BY
+                            dbms_random.value
+                    )
+                WHERE
+                    ROWNUM = 1;
                     
                     /*Calling the function to insert shift*/
-                   inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
-
-                END LOOP;
+                inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
+                
+                if inputcomplete = 2 then
+                    dbms_output.put_line('Shift already scheduled for given date and dorm');
+                end if;
 
             END LOOP;
+
         END LOOP;
-    ELSE
-        dbms_output.put_line('---Shifts already created---');
-    END IF;
+    END LOOP;
 
     /*Close the cursors*/
     CLOSE proctors;
@@ -161,9 +162,11 @@ BEGIN
 END;
 /
 
-
-
 EXEC shiftscheduler(sysdate + 7);
 
-
-select * from shifts;
+SELECT
+    *
+FROM
+    shifts;
+    
+delete from shifts;
