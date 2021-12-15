@@ -131,6 +131,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         udesc VARCHAR
     ) IS
         alreadyInserted number := 0;
+        invalidInsert Exception;
     BEGIN
         SELECT COUNT(*) INTO alreadyInserted 
         FROM utility_type_master utm 
@@ -144,9 +145,13 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                 udesc
             );
         ELSE
-            dbms_output.put_line('----Utility type already exists----');
+            RAISE invalidInsert;
         END IF; 
-
+    EXCEPTION
+         WHEN invalidInsert THEN
+            dbms_output.put_line('----Utility type already exists----');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
 /*Insert procedure for Dorm Table*/
@@ -160,6 +165,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         daddress2 VARCHAR
     ) IS
         alreadyInserted number := 0;
+        invalidInsert Exception;
     BEGIN
         SELECT COUNT(*) INTO alreadyInserted 
         FROM dorm d 
@@ -183,9 +189,13 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                 daddress2
             );
         ELSE
-            dbms_output.put_line('----Dorm already exists----');
+            RAISE invalidInsert;           
         END IF;
-
+    EXCEPTION
+         WHEN invalidInsert THEN
+            dbms_output.put_line('----Dorm already exists----');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     PROCEDURE insertstudent (
@@ -198,6 +208,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         semail      VARCHAR2
     ) IS
         alreadyInserted number := 0;
+        invalidInsert Exception;
     BEGIN
         SELECT COUNT(*) INTO alreadyInserted 
         FROM student s 
@@ -221,8 +232,13 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                 semail
             );
         ELSE
-            dbms_output.put_line('----Student already exists----');
+            RAISE invalidInsert; 
         END IF;
+        EXCEPTION
+         WHEN invalidInsert THEN
+            dbms_output.put_line('----Student already exists----');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     FUNCTION f_check_dorm_availability (
@@ -332,6 +348,8 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
             dbms_output.put_line('Invalid dorm!');
         WHEN already_resident THEN
             dbms_output.put_line('Already a resident!');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     FUNCTION f_is_valid_resident (
@@ -377,6 +395,8 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
     EXCEPTION
         WHEN e_valid_resident THEN
             dbms_output.put_line('Invalid resdient. Resident doesnt exists!');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     PROCEDURE p_swipe_me (
@@ -402,6 +422,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         send   TIMESTAMP
     ) IS
         alreadyinserted NUMBER := 0;
+        invalidInsert Exception;
     BEGIN
         SELECT
             COUNT(*)
@@ -423,9 +444,13 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
             );
 
         ELSE
-            dbms_output.put_line('----Shift type already exists----');
+            RAISE invalidInsert;           
         END IF;
-
+    EXCEPTION
+        WHEN invalidInsert THEN
+            dbms_output.put_line('----Shift type already exists----');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     PROCEDURE insertproctor (
@@ -436,6 +461,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         pdob     VARCHAR
     ) IS
         alreadyinserted NUMBER := 0;
+        invalidInsert Exception;
     BEGIN
         SELECT
             COUNT(*)
@@ -462,9 +488,13 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
             );
 
         ELSE
-            dbms_output.put_line('----Proctor already exists----');
+            RAISE invalidInsert;
         END IF;
-
+    EXCEPTION
+        WHEN invalidInsert THEN
+            dbms_output.put_line('----Proctor already exists----');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     PROCEDURE insertsupervisor (
@@ -474,6 +504,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         supemail   VARCHAR
     ) IS
         alreadyinserted NUMBER := 0;
+        invalidInsert Exception;
     BEGIN
         SELECT
             COUNT(*)
@@ -498,9 +529,13 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
             );
 
         ELSE
-            dbms_output.put_line('----Supervisor already exists----');
+            RAISE invalidInsert;
         END IF;
-
+    EXCEPTION
+        WHEN invalidInsert THEN
+            dbms_output.put_line('----Supervisor already exists----');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     FUNCTION f_is_valid_utility (
@@ -722,6 +757,12 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
     /*Close the cursors*/
         CLOSE proctors;
         CLOSE supervisors;
+    EXCEPTION
+        WHEN CURSOR_ALREADY_OPEN THEN
+            dbms_output.put_line('---Cursor OPEN in shiftscheduler---');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
+
     END;
 
     PROCEDURE shiftscheduler (
@@ -836,6 +877,11 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
     /*Close the cursors*/
         CLOSE proctors;
         CLOSE supervisors;
+    EXCEPTION
+        WHEN CURSOR_ALREADY_OPEN THEN
+            dbms_output.put_line('---Cursor OPEN in shiftscheduler---');
+        WHEN OTHERS THEN
+            dbms_output.put_line(SQLERRM);
     END;
 
     PROCEDURE insertpolice (
@@ -844,6 +890,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         policecontact VARCHAR
     ) IS
     alreadyInserted number := 0;
+    invalidInsert Exception;
     BEGIN
 
         SELECT COUNT(*) INTO 
@@ -863,12 +910,14 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                 policecontact
             );
         ELSE
-            dbms_output.put_line('----Police already exists----');
+            RAISE invalidInsert;
         END IF;
 
-
-        
-
+    EXCEPTION
+    WHEN invalidInsert THEN
+        dbms_output.put_line('----Police already exists----');
+    WHEN OTHERS THEN
+        dbms_output.put_line(SQLERRM);
     END;
 
     PROCEDURE generatecase (
@@ -4660,3 +4709,4 @@ SELECT
 FROM
     utility_type_master;
     
+commit;
