@@ -17,7 +17,7 @@ CREATE OR REPLACE VIEW dorm_occupancy AS
             res.dorm_id
     )
     SELECT
-        dc.dorm_id,
+        dc.dorm_id, dc.dorm_capacity,
         nvl((dc.dorm_capacity - do.dorm_count), dc.dorm_capacity) AS rooms_left
     FROM
         dorm_cap dc
