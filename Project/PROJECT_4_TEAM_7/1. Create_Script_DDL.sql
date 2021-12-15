@@ -441,7 +441,7 @@ BEGIN
     ELSE
         EXECUTE IMMEDIATE q'!CREATE TABLE utility (
             utility_id  NUMBER,
-            access_date DATE NOT NULL,
+            access_date TIMESTAMP NOT NULL,
             dorm_id     NUMBER,
             resident_id NUMBER NOT NULL,
             CONSTRAINT utility_master_fk FOREIGN KEY ( utility_id )

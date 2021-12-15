@@ -1,30 +1,31 @@
 SET SERVEROUTPUT ON;
 
 CREATE OR REPLACE TRIGGER t_resident_addition AFTER
-            UPDATE ON student
-            REFERENCING
-                    NEW AS new
-                    OLD AS old
-            FOR EACH ROW
-        DECLARE
-            l_transaction VARCHAR2(10);
+    UPDATE ON student
+    REFERENCING
+            NEW AS new
+            OLD AS old
+    FOR EACH ROW
+DECLARE
+    l_transaction VARCHAR2(10);
+BEGIN
+    IF
+        ( ( :old.is_resident <> :new.is_resident ) OR (
+            :old.is_resident IS NULL
+            AND :new.is_resident IS NOT NULL
+        ) OR (
+            :old.is_resident IS NOT NULL
+            AND :new.is_resident IS NULL
+        ) )
+        AND :new.is_resident = 'TRUE'
+    THEN
         BEGIN
-            IF
-                ( ( :old.is_resident <> :new.is_resident ) OR (
-                    :old.is_resident IS NULL
-                    AND :new.is_resident IS NOT NULL
-                ) OR (
-                    :old.is_resident IS NOT NULL
-                    AND :new.is_resident IS NULL
-                ) )
-                AND :new.is_resident = 'TRUE'
-            THEN
-                BEGIN
-                    insertdormmanagementdata.p_resident_addition(:new.student_id, :new.is_resident);
-                END;
-            END IF;
+            insertdormmanagementdata.p_resident_addition(:new.student_id, :new.is_resident);
         END;
-        /
+    END IF;
+END;
+/
+
 BEGIN
     insertdormmanagementdata.insertutilitymaster('Washer-101', 'This Washer is in Laundry Room 1 Ell Hall');
     insertdormmanagementdata.insertutilitymaster('Washer-102', 'This Washer is in Laundry Room 1 Ell Hall');
@@ -1694,12 +1695,6 @@ BEGIN
     insertdormmanagementdata.insertstudent('Troy Bollins', '(552) 6898023', '05-Apr-2001', 'M', 'FALSE',
                                           '14 Vera Pass', 'tbollinsef@meetup.com');
 
-    
-    
-    
-    
-    
-    
     insertdormmanagementdata.insertstudent('Sonnnie Scates', '(993) 1255741', '29-Oct-2000', 'F', 'TRUE',
                                           '66 Blaine Center', 'sscateseg@examiner.com');
 
@@ -3140,13 +3135,11 @@ BEGIN
     insertdormmanagementdata.insertstudent('Noak Muslim', '(841) 7717372', '09-Mar-2001', 'M', 'TRUE',
                                           '310 Summer Ridge Way', 'nmuslimrr@comcast.net');
 
-    
     insertdormmanagementdata.p_guest_entry('Prathamesh', '(857) 3186354', 1);
     insertdormmanagementdata.p_guest_entry('Viraj', '(123) 2354566', 2);
     insertdormmanagementdata.p_guest_entry('Urvang', '(233) 3545465', 3);
     insertdormmanagementdata.p_guest_entry('Vidhi', '(442) 2345456', 4);
     insertdormmanagementdata.p_guest_entry('Milind', '(562) 8765433', 5);
-    
     insertdormmanagementdata.p_swipe_me(1, 1);
     insertdormmanagementdata.p_swipe_me(2, 2);
     insertdormmanagementdata.p_swipe_me(3, 2);
@@ -3156,10 +3149,6 @@ BEGIN
     insertdormmanagementdata.p_swipe_me(7, 5);
     insertdormmanagementdata.p_swipe_me(8, 4);
     insertdormmanagementdata.p_swipe_me(9, 4);
-    
-    
-
-    
     insertdormmanagementdata.insertproctor('Tabbatha McCahey', '(202) 4623202', 'tmccahey0@gmpg.org', '143 Schiller Parkway', '14-Jan-1994');
     insertdormmanagementdata.insertproctor('Ilysa Fullard', '(241) 6124835', 'ifullard1@shutterfly.com', '07 Haas Place', '28-May-2000');
     insertdormmanagementdata.insertproctor('Dana Dimock', '(640) 7523291', 'ddimock2@tmall.com', '5632 Muir Court', '15-Sep-1988');
@@ -3196,7 +3185,8 @@ BEGIN
     insertdormmanagementdata.insertproctor('Barri Micka', '(242) 8322992', 'bmickax@bing.com', '0 Quincy Way', '02-Dec-1998');
     insertdormmanagementdata.insertproctor('Skippy Campkin', '(978) 5818543', 'scampkiny@reddit.com', '1 Elka Point', '26-May-1994');
     insertdormmanagementdata.insertproctor('Morena Demeza', '(296) 9049583', 'mdemezaz@walmart.com', '3832 Anniversary Park', '22-Mar-1995');
-    insertdormmanagementdata.insertproctor('Renault Gajownik', '(637) 8370789', 'rgajownik10@simplemachines.org', '64595 Di Loreto Center', '22-Feb-1999');
+    insertdormmanagementdata.insertproctor('Renault Gajownik', '(637) 8370789', 'rgajownik10@simplemachines.org', '64595 Di Loreto Center',
+    '22-Feb-1999');
     insertdormmanagementdata.insertproctor('Kevina Premble', '(783) 3941639', 'kpremble11@behance.net', '5460 Melrose Parkway', '23-May-1999');
     insertdormmanagementdata.insertproctor('Vonnie Chiles', '(378) 3635516', 'vchiles12@umich.edu', '2 Killdeer Point', '03-Sep-1999');
     insertdormmanagementdata.insertproctor('Shelba Gwilliams', '(407) 7570814', 'sgwilliams13@ucoz.com', '9 Northland Lane', '22-Mar-2003');
@@ -3229,7 +3219,8 @@ BEGIN
     insertdormmanagementdata.insertproctor('Saundra Hallor', '(735) 3339701', 'shallor1u@intel.com', '9675 Eagle Crest Street', '26-May-2000');
     insertdormmanagementdata.insertproctor('Ty Swindon', '(991) 1419226', 'tswindon1v@narod.ru', '71269 Lillian Crossing', '12-Jul-1993');
     insertdormmanagementdata.insertproctor('Zea O Loughnan', '(998) 7282052', 'zoloughnan1w@sohu.com', '2 Russell Drive', '06-May-1990');
-    insertdormmanagementdata.insertproctor('Lucius Kennifick', '(414) 1027211', 'lkennifick1x@barnesandnoble.com', '4218 Northfield Junction', '31-May-1991');
+    insertdormmanagementdata.insertproctor('Lucius Kennifick', '(414) 1027211', 'lkennifick1x@barnesandnoble.com', '4218 Northfield Junction',
+    '31-May-1991');
     insertdormmanagementdata.insertproctor('Gerianna Curnick', '(447) 7544119', 'gcurnick1y@163.com', '90492 Kings Hill', '28-Mar-2003');
     insertdormmanagementdata.insertproctor('Renelle Knock', '(547) 2906362', 'rknock1z@nyu.edu', '43 John Wall Drive', '27-Apr-1995');
     insertdormmanagementdata.insertproctor('Susan Spellacey', '(245) 2727544', 'sspellacey20@flickr.com', '12 Duke Junction', '03-Mar-1986');
@@ -3237,7 +3228,8 @@ BEGIN
     insertdormmanagementdata.insertproctor('Pauly Crosthwaite', '(746) 3807309', 'pcrosthwaite22@nba.com', '4241 Stang Place', '13-Mar-1990');
     insertdormmanagementdata.insertproctor('Godfrey Dwelly', '(766) 3198648', 'gdwelly23@answers.com', '8 Delladonna Trail', '31-Dec-1992');
     insertdormmanagementdata.insertproctor('Deloria Asey', '(993) 8540506', 'dasey24@google.com.hk', '62 Monica Park', '07-May-1988');
-    insertdormmanagementdata.insertproctor('Clarabelle Goodbarr', '(817) 6351200', 'cgoodbarr25@mayoclinic.com', '159 Banding Place', '03-Dec-1997');
+    insertdormmanagementdata.insertproctor('Clarabelle Goodbarr', '(817) 6351200', 'cgoodbarr25@mayoclinic.com', '159 Banding Place',
+    '03-Dec-1997');
     insertdormmanagementdata.insertproctor('Betsy Cottie', '(349) 1883779', 'bcottie26@edublogs.org', '33 Tennyson Terrace', '04-Oct-1998');
     insertdormmanagementdata.insertproctor('Nathalie Rajchert', '(719) 5961558', 'nrajchert27@linkedin.com', '3893 Toban Road', '30-Jan-1997');
     insertdormmanagementdata.insertproctor('Jarvis Vickerman', '(374) 9435515', 'jvickerman28@twitpic.com', '93873 Bunting Drive', '12-Jan-1987');
@@ -3257,7 +3249,8 @@ BEGIN
     insertdormmanagementdata.insertproctor('Violetta Girodin', '(865) 4153507', 'vgirodin2m@google.ru', '3 Esch Hill', '24-Jan-1998');
     insertdormmanagementdata.insertproctor('Edgar Coutts', '(252) 2997668', 'ecoutts2n@homestead.com', '08462 Red Cloud Park', '19-Dec-1993');
     insertdormmanagementdata.insertproctor('Ealasaid Sellstrom', '(935) 5461920', 'esellstrom2o@lulu.com', '8374 Shelley Hill', '11-Feb-2001');
-    insertdormmanagementdata.insertproctor('Douglas Depport', '(311) 1596507', 'ddepport2p@walmart.com', '52887 Continental Crossing', '24-Sep-1987');
+    insertdormmanagementdata.insertproctor('Douglas Depport', '(311) 1596507', 'ddepport2p@walmart.com', '52887 Continental Crossing',
+    '24-Sep-1987');
     insertdormmanagementdata.insertsupervisor('Ryley Scrivin', '7842 Longview Way', '(972) 9294324', 'rscrivin0@geocities.com');
     insertdormmanagementdata.insertsupervisor('Roddie Lurriman', '6 Granby Parkway', '(682) 8855719', 'rlurriman1@stanford.edu');
     insertdormmanagementdata.insertsupervisor('Tiffy O Deoran', '653 Surrey Way', '(853) 2811364', 'todeoran2@netlog.com');
@@ -3278,22 +3271,29 @@ BEGIN
     insertdormmanagementdata.insertsupervisor('Drusie Adney', '22 Briar Crest Circle', '(261) 4626886', 'dadneyh@creativecommons.org');
     insertdormmanagementdata.insertsupervisor('Hans Coopey', '29 Calypso Place', '(166) 5127107', 'hcoopeyi@flickr.com');
     insertdormmanagementdata.insertsupervisor('Viv Kemster', '9645 Kingsford Crossing', '(413) 8925628', 'vkemsterj@1und1.de');
-    
-    
     insertdormmanagementdata.insertshiftmaster('A', to_timestamp('00:00:00', 'hh24:mi:ss'), to_timestamp('08:00:00', 'hh24:mi:ss'));
+
     insertdormmanagementdata.insertshiftmaster('B', to_timestamp('08:00:00', 'hh24:mi:ss'), to_timestamp('16:00:00', 'hh24:mi:ss'));
+
     insertdormmanagementdata.insertshiftmaster('C', to_timestamp('16:00:00', 'hh24:mi:ss'), to_timestamp('00:00:00', 'hh24:mi:ss'));
-    
-    
+
     insertdormmanagementdata.p_utility_entry(6, 6);
+    insertdormmanagementdata.p_utility_entry(6, 6);
+    insertdormmanagementdata.p_utility_entry(3, 3);
     insertdormmanagementdata.p_utility_entry(8, 5);
     insertdormmanagementdata.p_utility_entry(2, 4);
+    insertdormmanagementdata.p_utility_entry(3, 3);
     insertdormmanagementdata.p_utility_entry(1, 3);
     insertdormmanagementdata.p_utility_entry(12, 2);
+    insertdormmanagementdata.p_utility_entry(14, 1);
     insertdormmanagementdata.p_utility_entry(14, 1);
     insertdormmanagementdata.p_utility_entry(3, 3);
     insertdormmanagementdata.p_utility_entry(4, 4);
     insertdormmanagementdata.p_utility_entry(11, 6);
+    insertdormmanagementdata.p_utility_entry(7, 1);
+    insertdormmanagementdata.p_utility_entry(7, 1);
+    insertdormmanagementdata.p_utility_entry(7, 1);
+    insertdormmanagementdata.p_utility_entry(7, 1);
     insertdormmanagementdata.p_utility_entry(17, 2);
     insertdormmanagementdata.p_utility_entry(19, 4);
     insertdormmanagementdata.p_utility_entry(5, 2);
@@ -3302,12 +3302,8 @@ BEGIN
     insertdormmanagementdata.p_utility_entry(10, 4);
     insertdormmanagementdata.p_utility_entry(15, 5);
     insertdormmanagementdata.p_utility_entry(20, 6);
-    
     insertdormmanagementdata.shiftscheduler(sysdate + 5);
     insertdormmanagementdata.shiftscheduler(sysdate + 6, 3);
-    
-    
-
     insertdormmanagementdata.insertpolice('Netty Chaman', 'F', '(575) 5845382');
     insertdormmanagementdata.insertpolice('Launce Jacobssen', 'M', '(205) 3514451');
     insertdormmanagementdata.insertpolice('Quinn Barnsdale', 'M', '(836) 4735821');
@@ -3365,7 +3361,6 @@ BEGIN
     insertdormmanagementdata.generatecase(19, 'Suicide', 'John shot himself');
     insertdormmanagementdata.generatecase(8, 'Homicide', 'Francisco was found dead in his room. He was stabbed!');
     insertdormmanagementdata.generatecase(5, 'Theft', 'Personal items of residents stolen');
-
     insertdormmanagementdata.mapcasetopolice(3, 4, 'Open');
     insertdormmanagementdata.mapcasetopolice(8, 7, 'Open');
     insertdormmanagementdata.mapcasetopolice(24, 1, 'Open');
@@ -3374,7 +3369,6 @@ BEGIN
     COMMIT;
 END;
 /
-
 
 SELECT
     *
@@ -3441,6 +3435,11 @@ SELECT
 FROM
     utility;
 
+SELECT
+    *
+FROM
+    utility;
+    
 SELECT
     *
 FROM

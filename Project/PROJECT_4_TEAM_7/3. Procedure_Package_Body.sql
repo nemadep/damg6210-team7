@@ -544,7 +544,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
             resident
         WHERE
             resident_id = residentid;
-
+            
         INSERT INTO utility (
             utility_id,
             access_date,
@@ -552,7 +552,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
             resident_id
         ) VALUES (
             utilityid,
-            sysdate,
+            current_timestamp,
             dormid,
             residentid
         );
