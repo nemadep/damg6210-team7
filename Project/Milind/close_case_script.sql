@@ -20,62 +20,64 @@ create or replace PROCEDURE closeCase (
     e_case_not_mapped_to_given_police   EXCEPTION;
    
 BEGIN
+    IF caseStatus IN ('Closed') THEN
+        -- Check if given case is mapped to the given police
+        SELECT 
+            COUNT(*)
+        INTO is_case_mapped_to_given_police
+        FROM
+            police_incident_mapping
+        WHERE (case_id = caseId AND police_id = policeId);
     
-    -- Check if given case is mapped to the given police
-    SELECT 
-        COUNT(*)
-    INTO is_case_mapped_to_given_police
-    FROM
-        police_incident_mapping
-    WHERE (case_id = caseId AND police_id = policeId);
-    
-    -- Check if case is already closed
-    SELECT 
-        COUNT(*)
-    INTO is_case_already_closed
-    FROM
-        police_incident_mapping
-    WHERE (case_id = caseId AND case_status = caseStatus);
+        -- Check if case is already closed
+        SELECT 
+            COUNT(*)
+        INTO is_case_already_closed
+        FROM
+            police_incident_mapping
+        WHERE (case_id = caseId AND case_status = caseStatus);
         
-    -- Check if police exists
-    SELECT
-        COUNT(*)
-    INTO is_police_available
-    FROM
-        police
-    WHERE
-        police_id = policeID;
+        -- Check if police exists
+        SELECT
+            COUNT(*)
+        INTO is_police_available
+        FROM
+            police
+        WHERE
+            police_id = policeID;
+            
+        -- Check is case exists
+        SELECT
+            COUNT(*)
+        INTO is_case_available
+        FROM
+            incident
+        WHERE
+            case_id = caseID;
         
-    -- Check is case exists
-    SELECT
-        COUNT(*)
-    INTO is_case_available
-    FROM
-        incident
-    WHERE
-        case_id = caseID;
-    
-    IF is_police_available = 0 THEN
-        RAISE e_police_valid;
-            
-    ELSIF is_case_available = 0 THEN
-        RAISE e_case_valid;
-            
-    ELSIF is_case_mapped_to_given_police = 0 THEN
-        RAISE e_case_not_mapped_to_given_police;
-    
-    ELSIF caseStatus != 'Closed' THEN
-        RAISE e_case_status_not_valid;
+        IF is_police_available = 0 THEN
+            RAISE e_police_valid;
+                
+        ELSIF is_case_available = 0 THEN
+            RAISE e_case_valid;
+                
+        ELSIF is_case_mapped_to_given_police = 0 THEN
+            RAISE e_case_not_mapped_to_given_police;
         
-    ELSIF is_case_already_closed > 0 THEN
-        RAISE e_case_already_closed;
+        ELSIF is_case_already_closed > 0 THEN
+            RAISE e_case_already_closed;
+                
+        ELSE
+            UPDATE police_incident_mapping
+            SET case_status = caseStatus
+            WHERE case_id = caseID;
             
+        END IF;
+        
     ELSE
-        UPDATE police_incident_mapping
-        SET case_status = caseStatus
-        WHERE case_id = caseID;
-            
+        RAISE e_case_status_not_valid;
     END IF;
+    
     
     
 EXCEPTION
