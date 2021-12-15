@@ -263,7 +263,6 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
             student_id = studuentid;
 
         IF is_already_exists = 0 THEN
-            
             SELECT
                 COUNT(*)
             INTO is_available
@@ -530,8 +529,9 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         e_valid_utility EXCEPTION;
         dormid            NUMBER;
     BEGIN
-                dbms_output.put_line(utilityid ||'-' || residentid);
-
+        dbms_output.put_line(utilityid
+                             || '-'
+                             || residentid);
         is_valid_utility := f_is_valid_utility(utilityid);
         IF is_valid_utility = 0 THEN
             RAISE e_valid_utility;
@@ -1007,44 +1007,45 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         username VARCHAR,
         password VARCHAR
     ) IS
+
+        sqlstatement      VARCHAR2(255);
+        user_exists EXCEPTION;
+        PRAGMA exception_init ( user_exists, -1920 );
         is_user_available NUMBER;
     BEGIN
-        is_user_available := f_is_user_already_created(username);
-        IF ( is_user_available = 0 ) THEN
-            EXECUTE IMMEDIATE 'CREATE USER '
-                              || ''
-                              || username
-                              || ''
-                              || ' IDENTIFIED BY '
-                              || '"'
-                              || password
-                              || '"';
+        sqlstatement := 'CREATE USER "'
+                        || username
+                        || '" '
+                        || 'IDENTIFIED BY "'
+                        || password
+                        || '" ';
 
-        ELSE
-            dbms_output.put_line('User already created!');
-        END IF;
-
+        EXECUTE IMMEDIATE sqlstatement;
+        dbms_output.put_line('  OK: ' || sqlstatement);
+    EXCEPTION
+        WHEN user_exists THEN
+            dbms_output.put_line('WARN: ' || sqlstatement);
+            dbms_output.put_line('Already exists');
+        WHEN OTHERS THEN
+            dbms_output.put_line('FAIL: ' || sqlstatement);
     END;
 
     PROCEDURE create_role (
         rolename VARCHAR
     ) IS
-        is_role_available NUMBER;
+        sqlstatement VARCHAR2(512);
+        role_exists EXCEPTION;
+        PRAGMA exception_init ( role_exists, -1920 );
     BEGIN
-        SELECT
-            COUNT(*)
-        INTO is_role_available
-        FROM
-            dba_roles
-        WHERE
-            lower(role) = lower(rolename);
-
-        IF ( is_role_available = 1 ) THEN
-            dbms_output.put_line('Role already created!!');
-        ELSE
-            EXECUTE IMMEDIATE 'CREATE ROLE ' || rolename;
-        END IF;
-
+        sqlstatement := 'CREATE ROLE ' || rolename;
+        EXECUTE IMMEDIATE sqlstatement;
+        dbms_output.put_line('  OK: ' || sqlstatement);
+    EXCEPTION
+        WHEN role_exists THEN
+            dbms_output.put_line('WARN: ' || sqlstatement);
+            dbms_output.put_line('Already exists');
+        WHEN OTHERS THEN
+            dbms_output.put_line('FAIL: ' || sqlstatement);
     END;
 
     PROCEDURE manage_role_access (
@@ -1086,25 +1087,28 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         rolename VARCHAR,
         username VARCHAR
     ) IS
+
         is_role_available NUMBER;
+        sqlstatement      VARCHAR2(512);
+        role_exists EXCEPTION;
+        PRAGMA exception_init ( role_exists, -1920 );
     BEGIN
-        SELECT
-            COUNT(*)
-        INTO is_role_available
-        FROM
-            dba_roles
-        WHERE
-            lower(role) = lower(rolename);
+        sqlstatement := 'GRANT '
+                        || rolename
+                        || ' TO '
+                        || '"'
+                        || username
+                        || '"';
 
-        IF ( is_role_available = 1 ) THEN
-            EXECUTE IMMEDIATE 'GRANT '
-                              || rolename
-                              || ' TO '
-                              || username;
-        ELSE
-            dbms_output.put_line('Role not created!!');
-        END IF;
-
+        EXECUTE IMMEDIATE sqlstatement;
+        dbms_output.put_line('  OK: ' || sqlstatement);
+    EXCEPTION
+        WHEN role_exists THEN
+            dbms_output.put_line('WARN: ' || sqlstatement);
+            dbms_output.put_line('Already exists');
+        WHEN OTHERS THEN
+            dbms_output.put_line('FAIL: ' || sqlstatement);
+            dbms_output.put_line(sqlerrm);
     END;
 
     FUNCTION f_is_user_already_created (
@@ -1118,10 +1122,12 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         FROM
             dba_users
         WHERE
-            lower(username) = lower(username);
+            username = upper(username);
 
+        dbms_output.put_line('userName!!' || username);
+        dbms_output.put_line('is_available!!' || is_available);
         IF is_available > 0 THEN
-            is_available := 1;
+            is_available := 1; --already created
         END IF;
         RETURN is_available;
     END f_is_user_already_created;

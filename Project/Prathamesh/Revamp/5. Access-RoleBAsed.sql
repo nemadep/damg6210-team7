@@ -1,4 +1,3 @@
-SET SERVEROUTPUT ON;
 BEGIN
     dbms_output.put_line('***************************');
     dbms_output.put_line('Creating Users');
@@ -8,15 +7,15 @@ BEGIN
     Procedure - create_user
     Arguments - @username, @password
 */
-    manage_users_and_access.create_user('sysadmin1', 'Abc@12345');
-    manage_users_and_access.create_user('supervisor1', 'Abc@12345');
-    manage_users_and_access.create_user('resident1', 'Abc@12345');
-    manage_users_and_access.create_user('proctor1', 'Abc@12345');
-    manage_users_and_access.create_user('police1', 'Abc@12345');
+    manage_users_and_access.create_user('sysadmin1', 'Abc@1234');
+    manage_users_and_access.create_user('supervisor1', 'Abc@1234');
+    manage_users_and_access.create_user('resident1', 'Abc@1234');
+    manage_users_and_access.create_user('proctor1', 'Abc@1234');
+    manage_users_and_access.create_user('police1', 'Abc@1234');
     
     dbms_output.put_line('Users created successfully!!');
     dbms_output.put_line('Creating ROLE - SYSADMIN');
-    manage_users_and_access.create_role('r_sysadmin');
+    manage_users_and_access.create_role('sysadmin');
     dbms_output.put_line('ROLE - SYSADMIN created successfully!');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Access giving to ROLE - SYSADMIN....');
@@ -25,18 +24,18 @@ BEGIN
     Procedure - manage_role_access
     Arguments - @tablename, @role, @access_type
 */
-    manage_users_and_access.manage_role_access('student', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('resident', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('guest', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('shifts', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('supervisor', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('swipe_log', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('proctor', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('dorm', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('utility', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('utility_type_master', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('incident', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('police', 'r_sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('student', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('resident', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('guest', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('shifts', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('supervisor', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('swipe_log', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('proctor', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('dorm', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('utility', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('utility_type_master', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('incident', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('police', 'sysadmin', 'SELECT, INSERT, UPDATE, DELETE');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Access Granted to - SYSADMIN');
     dbms_output.put_line('TABLE: STUDENT  - SELECT, INSERT, UPDATE, DELETE');
@@ -53,7 +52,7 @@ BEGIN
     dbms_output.put_line('TABLE: POLICE  - SELECT, INSERT, UPDATE, DELETE');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Creating ROLE - SUPERVISOR');
-    manage_users_and_access.create_role('r_supervisor');
+    manage_users_and_access.create_role('supervisor');
     dbms_output.put_line('ROLE - SUPERVISOR created successfully!');
     dbms_output.put_line('Access giving to ROLE - SUPERVISOR....');
 /*
@@ -61,18 +60,18 @@ BEGIN
     Procedure - manage_role_access
     Arguments - @tablename, @role, @access_type
 */
-    manage_users_and_access.manage_role_access('student', 'r_supervisor', 'SELECT');
-    manage_users_and_access.manage_role_access('resident', 'r_supervisor', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('guest', 'r_supervisor', 'SELECT');
-    manage_users_and_access.manage_role_access('shifts', 'r_supervisor', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('supervisor', 'r_supervisor', 'SELECT');
-    manage_users_and_access.manage_role_access('swipe_log', 'r_supervisor', 'SELECT');
-    manage_users_and_access.manage_role_access('proctor', 'r_supervisor', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('dorm', 'r_supervisor', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('utility', 'r_supervisor', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('utility_type_master', 'r_supervisor', 'SELECT, INSERT, UPDATE, DELETE');
-    manage_users_and_access.manage_role_access('incident', 'r_supervisor', 'SELECT');
-    manage_users_and_access.manage_role_access('police', 'r_supervisor', 'SELECT');
+    manage_users_and_access.manage_role_access('student', 'supervisor', 'SELECT');
+    manage_users_and_access.manage_role_access('resident', 'supervisor', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('guest', 'supervisor', 'SELECT');
+    manage_users_and_access.manage_role_access('shifts', 'supervisor', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('supervisor', 'supervisor', 'SELECT');
+    manage_users_and_access.manage_role_access('swipe_log', 'supervisor', 'SELECT');
+    manage_users_and_access.manage_role_access('proctor', 'supervisor', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('dorm', 'supervisor', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('utility', 'supervisor', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('utility_type_master', 'supervisor', 'SELECT, INSERT, UPDATE, DELETE');
+    manage_users_and_access.manage_role_access('incident', 'supervisor', 'SELECT');
+    manage_users_and_access.manage_role_access('police', 'supervisor', 'SELECT');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Access Granted to - SUPERVISOR');
     dbms_output.put_line('TABLE: STUDENT  - SELECT');
@@ -89,7 +88,7 @@ BEGIN
     dbms_output.put_line('TABLE: POLICE  - SELECT');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Creating ROLE - RESIDENT');
-    manage_users_and_access.create_role('r_resident');
+    manage_users_and_access.create_role('resident');
     dbms_output.put_line('ROLE - RESIDENT created successfully!');
     dbms_output.put_line('Access giving to ROLE - RESIDENT....');
 /*
@@ -97,12 +96,11 @@ BEGIN
     Procedure - manage_role_access
     Arguments - @tablename, @role, @access_type
 */
-    manage_users_and_access.manage_role_access('student', 'r_resident', 'SELECT');
-    manage_users_and_access.manage_role_access('resident', 'r_resident', 'SELECT');
-    manage_users_and_access.manage_role_access('dorm', 'r_resident', 'SELECT');
-    manage_users_and_access.manage_role_access('utility', 'r_resident', 'SELECT');
-    manage_users_and_access.manage_role_access('utility_type_master', 'r_resident', 'SELECT');
-    
+    manage_users_and_access.manage_role_access('student', 'resident', 'SELECT');
+    manage_users_and_access.manage_role_access('resident', 'resident', 'SELECT');
+    manage_users_and_access.manage_role_access('dorm', 'resident', 'SELECT');
+    manage_users_and_access.manage_role_access('utility', 'resident', 'SELECT');
+    manage_users_and_access.manage_role_access('utility_type_master', 'resident', 'SELECT');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Access Granted to - RESIDENT');
     dbms_output.put_line('TABLE: STUDENT  - SELECT');
@@ -112,7 +110,7 @@ BEGIN
     dbms_output.put_line('TABLE: UTILITY_TYPE_MASTER - SELECT');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Creating ROLE - PROCTOR');
-    manage_users_and_access.create_role('r_proctor');
+    manage_users_and_access.create_role('proctor');
     dbms_output.put_line('ROLE - PROCTOR created successfully!');
     dbms_output.put_line('Access giving to ROLE - PROCTOR....');
 /*
@@ -120,18 +118,18 @@ BEGIN
     Procedure - manage_role_access
     Arguments - @tablename, @role, @access_type
 */
-    manage_users_and_access.manage_role_access('student', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('resident', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('guest', 'r_proctor', 'SELECT, INSERT, UPDATE');
-    manage_users_and_access.manage_role_access('shifts', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('supervisor', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('swipe_log', 'r_proctor', 'SELECT, INSERT');
-    manage_users_and_access.manage_role_access('proctor', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('dorm', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('utility', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('utility_type_master', 'r_proctor', 'SELECT');
-    manage_users_and_access.manage_role_access('incident', 'r_proctor', 'SELECT, INSERT, UPDATE');
-    manage_users_and_access.manage_role_access('police', 'r_proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('student', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('resident', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('guest', 'proctor', 'SELECT, INSERT, UPDATE');
+    manage_users_and_access.manage_role_access('shifts', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('supervisor', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('swipe_log', 'proctor', 'SELECT, INSERT');
+    manage_users_and_access.manage_role_access('proctor', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('dorm', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('utility', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('utility_type_master', 'proctor', 'SELECT');
+    manage_users_and_access.manage_role_access('incident', 'proctor', 'SELECT, INSERT, UPDATE');
+    manage_users_and_access.manage_role_access('police', 'proctor', 'SELECT');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Access Granted to - PROCTOR');
     dbms_output.put_line('TABLE: STUDENT  - SELECT');
@@ -148,7 +146,7 @@ BEGIN
     dbms_output.put_line('TABLE: POLICE  - SELECT');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Creating ROLE - POLICE');
-    manage_users_and_access.create_role('r_police');
+    manage_users_and_access.create_role('police');
     dbms_output.put_line('ROLE - POLICE created successfully!');
     dbms_output.put_line('Access giving to ROLE - POLICE....');
 /*
@@ -156,10 +154,10 @@ BEGIN
     Procedure - manage_role_access
     Arguments - @tablename, @role, @access_type
 */
-    manage_users_and_access.manage_role_access('supervisor', 'r_police', 'SELECT');
-    manage_users_and_access.manage_role_access('proctor', 'r_police', 'SELECT');
-    manage_users_and_access.manage_role_access('dorm', 'r_police', 'SELECT');
-    manage_users_and_access.manage_role_access('incident', 'r_police', 'SELECT, UPDATE');
+    manage_users_and_access.manage_role_access('supervisor', 'police', 'SELECT');
+    manage_users_and_access.manage_role_access('proctor', 'police', 'SELECT');
+    manage_users_and_access.manage_role_access('dorm', 'police', 'SELECT');
+    manage_users_and_access.manage_role_access('incident', 'police', 'SELECT, UPDATE');
     dbms_output.put_line('***************************');
     dbms_output.put_line('Access Granted to - POLICE');
     dbms_output.put_line('TABLE: SUPERVISOR  - SELECT');
@@ -173,15 +171,11 @@ BEGIN
     Procedure - grant_role_to_user
     Arguments - @rolename, @username
 */
-    manage_users_and_access.grant_role_to_user('r_sysadmin', 'sysadmin1');
-    manage_users_and_access.grant_role_to_user('r_supervisor', 'supervisor1');
-    manage_users_and_access.grant_role_to_user('r_resident', 'resident1');
-    manage_users_and_access.grant_role_to_user('r_proctor', 'proctor1');
-    manage_users_and_access.grant_role_to_user('r_police', 'police1');
+    manage_users_and_access.grant_role_to_user('sysadmin', 'sysadmin1');
+    manage_users_and_access.grant_role_to_user('supervisor', 'supervisor1');
+    manage_users_and_access.grant_role_to_user('resident', 'resident1');
+    manage_users_and_access.grant_role_to_user('proctor', 'proctor1');
+    manage_users_and_access.grant_role_to_user('police', 'police1');
     dbms_output.put_line('Roles allocated successfully...');
 END;
 /
-
-SELECT * FROM DBA_ROLES;
-SELECT * FROM DBA_USERS;
-
