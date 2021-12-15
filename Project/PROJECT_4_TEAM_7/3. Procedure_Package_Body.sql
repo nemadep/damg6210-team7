@@ -1008,44 +1008,43 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         password VARCHAR
     ) IS
 
-        sqlstatement      VARCHAR2(255);
+        sqlS      VARCHAR2(255);
         user_exists EXCEPTION;
-        PRAGMA exception_init ( user_exists, -1920 );
+        PRAGMA exception_init ( user_exists, -2002 );
         is_user_available NUMBER;
     BEGIN
-        sqlstatement := 'CREATE USER "'
+        sqlS := 'CREATE USER '
                         || username
-                        || '" '
-                        || 'IDENTIFIED BY "'
+                        || ' IDENTIFIED BY "'
                         || password
                         || '" ';
 
-        EXECUTE IMMEDIATE sqlstatement;
-        dbms_output.put_line('  OK: ' || sqlstatement);
+        EXECUTE IMMEDIATE sqlS;
+        dbms_output.put_line('  OK: ' || sqlS);
     EXCEPTION
         WHEN user_exists THEN
-            dbms_output.put_line('WARN: ' || sqlstatement);
+            dbms_output.put_line('WARN: ' || sqlS);
             dbms_output.put_line('Already exists');
         WHEN OTHERS THEN
-            dbms_output.put_line('FAIL: ' || sqlstatement);
+            dbms_output.put_line('FAIL: ' || sqlS);
     END;
 
     PROCEDURE create_role (
         rolename VARCHAR
     ) IS
-        sqlstatement VARCHAR2(255);
+        sqlS VARCHAR2(255);
         role_exists EXCEPTION;
-        PRAGMA exception_init ( role_exists, -1920 );
+        PRAGMA exception_init ( role_exists, -2002 );
     BEGIN
-        sqlstatement := 'CREATE ROLE ' || rolename;
-        EXECUTE IMMEDIATE sqlstatement;
-        dbms_output.put_line('  OK: ' || sqlstatement);
+        sqlS := 'CREATE ROLE ' || rolename;
+        EXECUTE IMMEDIATE sqlS;
+        dbms_output.put_line('  OK: ' || sqlS);
     EXCEPTION
         WHEN role_exists THEN
-            dbms_output.put_line('WARN: ' || sqlstatement);
+            dbms_output.put_line('WARN: ' || sqlS);
             dbms_output.put_line('Already exists');
         WHEN OTHERS THEN
-            dbms_output.put_line('FAIL: ' || sqlstatement);
+            dbms_output.put_line('FAIL: ' || sqlS);
     END;
 
     PROCEDURE manage_role_access (
@@ -1089,25 +1088,25 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
     ) IS
 
         is_role_available NUMBER;
-        sqlstatement      VARCHAR2(255);
+        sqlS      VARCHAR2(255);
         role_exists EXCEPTION;
-        PRAGMA exception_init ( role_exists, -1920 );
+        PRAGMA exception_init ( role_exists, -2002 );
     BEGIN
-        sqlstatement := 'GRANT '
+        sqlS := 'GRANT '
                         || rolename
                         || ' TO '
                         || '"'
                         || username
                         || '"';
 
-        EXECUTE IMMEDIATE sqlstatement;
-        dbms_output.put_line('  OK: ' || sqlstatement);
+        EXECUTE IMMEDIATE sqlS;
+        dbms_output.put_line('  OK: ' || sqlS);
     EXCEPTION
         WHEN role_exists THEN
-            dbms_output.put_line('WARN: ' || sqlstatement);
+            dbms_output.put_line('WARN: ' || sqlS);
             dbms_output.put_line('Already exists');
         WHEN OTHERS THEN
-            dbms_output.put_line('FAIL: ' || sqlstatement);
+            dbms_output.put_line('FAIL: ' || sqlS);
             dbms_output.put_line(sqlerrm);
     END;
 
