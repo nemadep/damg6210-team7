@@ -40,7 +40,7 @@ BEGIN
 EXCEPTION
 
     WHEN e_dorm_valid THEN
-        RAISE_APPLICATION_ERROR(-20210, 'Invalid dorm!');
+        dbms_output.put_line('Invalid dorm!');
 END;
 /
 

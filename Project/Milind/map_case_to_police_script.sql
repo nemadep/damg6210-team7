@@ -72,13 +72,13 @@ BEGIN
 EXCEPTION
 
     WHEN e_case_already_mapped THEN
-        RAISE_APPLICATION_ERROR(-20310, 'Case already mapped to police!');
+        dbms_output.put_line('Case already mapped to police!');
     
     WHEN e_police_valid THEN
-        RAISE_APPLICATION_ERROR(-20320, 'Invalid police!');
+        dbms_output.put_line('Invalid police!');
     
     WHEN e_case_valid THEN
-        RAISE_APPLICATION_ERROR(-20330, 'Invalid case!');
+        dbms_output.put_line('Invalid case!');
 END;
 /
 
