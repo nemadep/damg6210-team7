@@ -24,5 +24,8 @@ CREATE OR REPLACE VIEW proctorwithmaxshifts AS
             ORDER BY
                 shift_count DESC
         );
-        
-select * from proctorwithmaxshifts;
+
+SELECT
+    *
+FROM
+    proctorwithmaxshifts;

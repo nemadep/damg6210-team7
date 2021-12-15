@@ -529,9 +529,6 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         e_valid_utility EXCEPTION;
         dormid            NUMBER;
     BEGIN
-        dbms_output.put_line(utilityid
-                             || '-'
-                             || residentid);
         is_valid_utility := f_is_valid_utility(utilityid);
         IF is_valid_utility = 0 THEN
             RAISE e_valid_utility;
@@ -578,12 +575,23 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
     ) RETURN NUMBER AS
         successin             NUMBER := 0;
         proctorddonefortheday NUMBER := 0;
+        shiftexists           NUMBER := 0;
     BEGIN
     /*  
         Check if a shift is already assigned to a proctor for the given day.
         If it is assigned return from the function.
         If not insert a new shift.
     */
+        SELECT
+            COUNT(*)
+        INTO shiftexists
+        FROM
+            shifts sh
+        WHERE
+                shiftt = sh.shift_type
+            AND dor = sh.dorm_id
+            AND to_date(sh.shift_date) = to_date(sch);
+
         SELECT
             COUNT(*)
         INTO proctorddonefortheday
@@ -593,26 +601,30 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                 proctor_id = proc
             AND shift_date = sch;
 
-        IF proctorddonefortheday = 0 THEN
-            INSERT INTO shifts (
-                shift_type,
-                proctor_id,
-                shift_date,
-                create_at,
-                update_at,
-                supervisor_id,
-                dorm_id
-            ) VALUES (
-                shiftt,
-                proc,
-                sch,
-                sysdate,
-                sysdate,
-                sup,
-                dor
-            );
+        IF shiftexists = 0 THEN
+            IF proctorddonefortheday = 0 THEN
+                INSERT INTO shifts (
+                    shift_type,
+                    proctor_id,
+                    shift_date,
+                    create_at,
+                    update_at,
+                    supervisor_id,
+                    dorm_id
+                ) VALUES (
+                    shiftt,
+                    proc,
+                    sch,
+                    sysdate,
+                    sysdate,
+                    sup,
+                    dor
+                );
 
-            successin := 1;
+                successin := 1;
+            END IF;
+        ELSE
+            successin := 2;
         END IF;
 
         RETURN successin;
@@ -622,24 +634,11 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         schdate DATE
     ) IS
 
-        datecount     NUMBER := 0;
         CURSOR shifttypes IS
         SELECT
             shift_type
         FROM
             shifts_type_master;
-
-        CURSOR proctors IS
-        SELECT
-            proctor_id
-        FROM
-            proctor;
-
-        CURSOR supervisors IS
-        SELECT
-            supervisor_id
-        FROM
-            supervisor;
 
         CURSOR dormids IS
         SELECT
@@ -647,31 +646,200 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         FROM
             dorm;
 
-        supid         supervisor.supervisor_id%TYPE;
-        procid        proctor.proctor_id%TYPE;
-        did           NUMBER;
-        stype         CHAR;
-        inputcomplete NUMBER := 0;
+        datecount       NUMBER := 0;
+        supid           supervisor.supervisor_id%TYPE;
+        procid          proctor.proctor_id%TYPE;
+        did             NUMBER;
+        stype           CHAR;
+        inputcomplete   NUMBER := 0;
+        proctorcount    NUMBER := 0;
+        supervisorcount NUMBER := 0;
+        dormcount       NUMBER := 0;
+        shiftmaster     NUMBER := 0;
+        no_proctors EXCEPTION;
+        no_supervisors EXCEPTION;
+        no_dorm EXCEPTION;
+        no_shift_master EXCEPTION;
     BEGIN
-    
-    /* Open the cursors */
-        OPEN proctors;
-        OPEN supervisors;
-    
-    /*  
-        Check if shifts are already scheduled for given date.
-        If not created generate new shifts for the given date
-        else raise a warning and exit.
-    */
         SELECT
             COUNT(*)
-        INTO datecount
+        INTO proctorcount
         FROM
-            shifts
-        WHERE
-            to_date(shift_date) = to_date(schdate);
+            proctor;
 
-        IF datecount = 0 THEN
+        SELECT
+            COUNT(*)
+        INTO supervisorcount
+        FROM
+            supervisor;
+
+        SELECT
+            COUNT(*)
+        INTO dormcount
+        FROM
+            dorm;
+
+        SELECT
+            COUNT(*)
+        INTO shiftmaster
+        FROM
+            shifts_type_master;
+
+        IF proctorcount = 0 THEN
+            RAISE no_proctors;
+        ELSIF supervisorcount = 0 THEN
+            RAISE no_supervisors;
+        ELSIF dormcount = 0 THEN
+            RAISE no_dorm;
+        ELSIF shiftmaster = 0 THEN
+            RAISE no_shift_master;
+        END IF;
+
+        /*loop over all the dorms in the cursor*/
+        FOR did IN dormids LOOP
+            /*loop over all the types of shift*/
+            FOR stype IN shifttypes LOOP
+                inputcomplete := 0;
+                /*Try to insert a unique */
+                WHILE inputcomplete = 0 LOOP
+                    /*Picking a random supervisor for the table*/
+                    SELECT
+                        supervisor_id
+                    INTO supid
+                    FROM
+                        (
+                            SELECT
+                                supervisor_id
+                            FROM
+                                supervisor
+                            ORDER BY
+                                dbms_random.value
+                        )
+                    WHERE
+                        ROWNUM = 1;
+                    
+                    /*Picking a random proctor for the table*/
+                    SELECT
+                        proctor_id
+                    INTO procid
+                    FROM
+                        (
+                            SELECT
+                                proctor_id
+                            FROM
+                                proctor
+                            ORDER BY
+                                dbms_random.value
+                        )
+                    WHERE
+                        ROWNUM = 1;
+
+                    DECLARE
+                        proctor_limit EXCEPTION;
+                        shift_already_done EXCEPTION;
+                    BEGIN   
+                    /*Calling the function to insert shift*/
+                        inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
+
+                        IF inputcomplete = 2 THEN
+                            RAISE shift_already_done;
+                        ELSIF inputcomplete = 0 THEN
+                            RAISE proctor_limit;
+                        END IF;
+
+                    EXCEPTION
+                        WHEN proctor_limit THEN
+                            dbms_output.put_line('Selected proctor already crossed the daily work limit');
+                        WHEN shift_already_done THEN
+                            dbms_output.put_line('Shift already scheduled for given date and dorm');
+                    END;
+
+                END LOOP;
+
+            END LOOP;
+        END LOOP;
+
+    EXCEPTION
+        WHEN no_proctors THEN
+            dbms_output.put_line('---No proctor data found---');
+        WHEN no_supervisors THEN
+            dbms_output.put_line('---No supervisor data found---');
+        WHEN no_dorm THEN
+            dbms_output.put_line('---No dorm data found---');
+        WHEN no_shift_master THEN
+            dbms_output.put_line('---No shift master data found---');
+        WHEN OTHERS THEN
+            dbms_output.put_line(sqlerrm);
+    END;
+
+    PROCEDURE shiftscheduler (
+        schdate DATE,
+        tillday NUMBER
+    ) IS
+
+        datecount       NUMBER := 0;
+        CURSOR shifttypes IS
+        SELECT
+            shift_type
+        FROM
+            shifts_type_master;
+
+        CURSOR dormids IS
+        SELECT
+            dorm_id
+        FROM
+            dorm;
+
+        supid           supervisor.supervisor_id%TYPE;
+        procid          proctor.proctor_id%TYPE;
+        did             NUMBER;
+        stype           CHAR;
+        inputcomplete   NUMBER := 0;
+        proctorcount    NUMBER := 0;
+        supervisorcount NUMBER := 0;
+        dormcount       NUMBER := 0;
+        shiftmaster     NUMBER := 0;
+        no_proctors EXCEPTION;
+        no_supervisors EXCEPTION;
+        no_dorm EXCEPTION;
+        no_shift_master EXCEPTION;
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO proctorcount
+        FROM
+            proctor;
+
+        SELECT
+            COUNT(*)
+        INTO supervisorcount
+        FROM
+            supervisor;
+
+        SELECT
+            COUNT(*)
+        INTO dormcount
+        FROM
+            dorm;
+
+        SELECT
+            COUNT(*)
+        INTO shiftmaster
+        FROM
+            shifts_type_master;
+
+        IF proctorcount = 0 THEN
+            RAISE no_proctors;
+        ELSIF supervisorcount = 0 THEN
+            RAISE no_supervisors;
+        ELSIF dormcount = 0 THEN
+            RAISE no_dorm;
+        ELSIF shiftmaster = 0 THEN
+            RAISE no_shift_master;
+        END IF;
+
+    /*loop over days*/
+        FOR schday IN 0..tillday LOOP
         /*loop over all the dorms in the cursor*/
             FOR did IN dormids LOOP
             /*loop over all the types of shift*/
@@ -710,143 +878,42 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                             )
                         WHERE
                             ROWNUM = 1;
-                    
+
+                        DECLARE
+                            proctor_limit EXCEPTION;
+                            shift_already_done EXCEPTION;
+                        BEGIN   
                     /*Calling the function to insert shift*/
-                        inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
+                            inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate, stype.shift_type);
+
+                            IF inputcomplete = 2 THEN
+                                RAISE shift_already_done;
+                            ELSIF inputcomplete = 0 THEN
+                                RAISE proctor_limit;
+                            END IF;
+
+                        EXCEPTION
+                            WHEN proctor_limit THEN
+                                dbms_output.put_line('Selected proctor already crossed the daily work limit');
+                            WHEN shift_already_done THEN
+                                dbms_output.put_line('Shift already scheduled for given date and dorm');
+                        END;
 
                     END LOOP;
 
                 END LOOP;
             END LOOP;
-        ELSE
-            dbms_output.put_line('---Shifts already created---');
-        END IF;
-
-    /*Close the cursors*/
-        CLOSE proctors;
-        CLOSE supervisors;
-    EXCEPTION
-        WHEN cursor_already_open THEN
-            dbms_output.put_line('---Cursor OPEN in shiftscheduler---');
-        WHEN OTHERS THEN
-            dbms_output.put_line(sqlerrm);
-    END;
-
-    PROCEDURE shiftscheduler (
-        schdate DATE,
-        tillday NUMBER
-    ) IS
-
-        datecount     NUMBER := 0;
-        CURSOR shifttypes IS
-        SELECT
-            shift_type
-        FROM
-            shifts_type_master;
-
-        CURSOR proctors IS
-        SELECT
-            proctor_id
-        FROM
-            proctor;
-
-        CURSOR supervisors IS
-        SELECT
-            supervisor_id
-        FROM
-            supervisor;
-
-        CURSOR dormids IS
-        SELECT
-            dorm_id
-        FROM
-            dorm;
-
-        supid         supervisor.supervisor_id%TYPE;
-        procid        proctor.proctor_id%TYPE;
-        did           NUMBER;
-        stype         CHAR;
-        inputcomplete NUMBER := 0;
-    BEGIN
-    /* Open the cursors */
-        OPEN proctors;
-        OPEN supervisors;
-    
-    /*loop over days*/
-        FOR schday IN 0..tillday LOOP
-        /*  
-            Check if shifts are already scheduled for given date.
-            If not created generate new shifts for the given date
-            else raise a warning and exit.
-        */
-            SELECT
-                COUNT(*)
-            INTO datecount
-            FROM
-                shifts
-            WHERE
-                to_date(shift_date) = to_date(schdate + schday);
-
-            IF datecount = 0 THEN
-            /*loop over all the dorms in the cursor*/
-                FOR did IN dormids LOOP
-                /*loop over all the types of shift*/
-                    FOR stype IN shifttypes LOOP
-                        inputcomplete := 0;
-                    /*Try to insert a unique */
-                        WHILE inputcomplete = 0 LOOP
-                        /*Picking a random supervisor for the table*/
-                            SELECT
-                                supervisor_id
-                            INTO supid
-                            FROM
-                                (
-                                    SELECT
-                                        supervisor_id
-                                    FROM
-                                        supervisor
-                                    ORDER BY
-                                        dbms_random.value
-                                )
-                            WHERE
-                                ROWNUM = 1;
-                        
-                        /*Picking a random proctor for the table*/
-                            SELECT
-                                proctor_id
-                            INTO procid
-                            FROM
-                                (
-                                    SELECT
-                                        proctor_id
-                                    FROM
-                                        proctor
-                                    ORDER BY
-                                        dbms_random.value
-                                )
-                            WHERE
-                                ROWNUM = 1;
-                        
-                        /*Calling the function to insert shift*/
-                            inputcomplete := shiftcreated(procid, supid, did.dorm_id, schdate + schday, stype.shift_type);
-
-                        END LOOP;
-
-                    END LOOP;
-                END LOOP;
-
-            ELSE
-                dbms_output.put_line('---Shifts already created---');
-            END IF;
-
         END LOOP;
 
-    /*Close the cursors*/
-        CLOSE proctors;
-        CLOSE supervisors;
     EXCEPTION
-        WHEN cursor_already_open THEN
-            dbms_output.put_line('---Cursor OPEN in shiftscheduler---');
+        WHEN no_proctors THEN
+            dbms_output.put_line('---No proctor data found---');
+        WHEN no_supervisors THEN
+            dbms_output.put_line('---No supervisor data found---');
+        WHEN no_dorm THEN
+            dbms_output.put_line('---No dorm data found---');
+        WHEN no_shift_master THEN
+            dbms_output.put_line('---No shift master data found---');
         WHEN OTHERS THEN
             dbms_output.put_line(sqlerrm);
     END;
@@ -1008,43 +1075,42 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         password VARCHAR
     ) IS
 
-        sqlS      VARCHAR2(255);
+        sqls              VARCHAR2(255);
         user_exists EXCEPTION;
         PRAGMA exception_init ( user_exists, -2002 );
         is_user_available NUMBER;
     BEGIN
-        sqlS := 'CREATE USER '
-                        || username
-                        || ' IDENTIFIED BY "'
-                        || password
-                        || '" ';
-
-        EXECUTE IMMEDIATE sqlS;
-        dbms_output.put_line('  OK: ' || sqlS);
+        sqls := 'CREATE USER '
+                || username
+                || ' IDENTIFIED BY "'
+                || password
+                || '" ';
+        EXECUTE IMMEDIATE sqls;
+        dbms_output.put_line('  OK: ' || sqls);
     EXCEPTION
         WHEN user_exists THEN
-            dbms_output.put_line('WARN: ' || sqlS);
+            dbms_output.put_line('WARN: ' || sqls);
             dbms_output.put_line('Already exists');
         WHEN OTHERS THEN
-            dbms_output.put_line('FAIL: ' || sqlS);
+            dbms_output.put_line('FAIL: ' || sqls);
     END;
 
     PROCEDURE create_role (
         rolename VARCHAR
     ) IS
-        sqlS VARCHAR2(255);
+        sqls VARCHAR2(255);
         role_exists EXCEPTION;
         PRAGMA exception_init ( role_exists, -2002 );
     BEGIN
-        sqlS := 'CREATE ROLE ' || rolename;
-        EXECUTE IMMEDIATE sqlS;
-        dbms_output.put_line('  OK: ' || sqlS);
+        sqls := 'CREATE ROLE ' || rolename;
+        EXECUTE IMMEDIATE sqls;
+        dbms_output.put_line('  OK: ' || sqls);
     EXCEPTION
         WHEN role_exists THEN
-            dbms_output.put_line('WARN: ' || sqlS);
+            dbms_output.put_line('WARN: ' || sqls);
             dbms_output.put_line('Already exists');
         WHEN OTHERS THEN
-            dbms_output.put_line('FAIL: ' || sqlS);
+            dbms_output.put_line('FAIL: ' || sqls);
     END;
 
     PROCEDURE manage_role_access (
@@ -1088,25 +1154,25 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
     ) IS
 
         is_role_available NUMBER;
-        sqlS      VARCHAR2(255);
+        sqls              VARCHAR2(255);
         role_exists EXCEPTION;
         PRAGMA exception_init ( role_exists, -2002 );
     BEGIN
-        sqlS := 'GRANT '
-                        || rolename
-                        || ' TO '
-                        || '"'
-                        || username
-                        || '"';
+        sqls := 'GRANT '
+                || rolename
+                || ' TO '
+                || '"'
+                || username
+                || '"';
 
-        EXECUTE IMMEDIATE sqlS;
-        dbms_output.put_line('  OK: ' || sqlS);
+        EXECUTE IMMEDIATE sqls;
+        dbms_output.put_line('  OK: ' || sqls);
     EXCEPTION
         WHEN role_exists THEN
-            dbms_output.put_line('WARN: ' || sqlS);
+            dbms_output.put_line('WARN: ' || sqls);
             dbms_output.put_line('Already exists');
         WHEN OTHERS THEN
-            dbms_output.put_line('FAIL: ' || sqlS);
+            dbms_output.put_line('FAIL: ' || sqls);
             dbms_output.put_line(sqlerrm);
     END;
 
