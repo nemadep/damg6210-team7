@@ -1,3 +1,5 @@
+SET SERVEROUTPUT ON;
+
 CREATE OR REPLACE FUNCTION shiftcreated (
     proc   proctor.proctor_id%TYPE,
     sup    supervisor.supervisor_id%TYPE,
@@ -22,6 +24,7 @@ BEGIN
             proctor_id = proc
         AND shift_date = sch;
 
+    dbms_output.put_line(proctorddonefortheday);
     IF proctorddonefortheday = 0 THEN
         INSERT INTO shifts (
             shift_type,
@@ -100,7 +103,7 @@ BEGIN
         shifts
     WHERE
         to_date(shift_date) = to_date(schdate);
-
+    dbms_output.put_line(datecount);
     IF datecount = 0 THEN
         /*loop over all the dorms in the cursor*/
         FOR did IN dormids LOOP
@@ -149,7 +152,7 @@ BEGIN
             END LOOP;
         END LOOP;
     ELSE
-        raise_application_error(-20004, 'Shifts already created');
+        dbms_output.put_line('---Shifts already created---');
     END IF;
 
     /*Close the cursors*/
@@ -164,4 +167,3 @@ EXEC shiftscheduler(sysdate + 7);
 
 
 select * from shifts;
-select count(*) from proctor;
