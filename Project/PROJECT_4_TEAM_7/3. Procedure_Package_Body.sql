@@ -745,6 +745,8 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                             RAISE shift_already_done;
                         ELSIF inputcomplete = 0 THEN
                             RAISE proctor_limit;
+                        ELSE
+                            dbms_output.put_line('New shift inserted for given date and dorm');
                         END IF;
 
                     EXCEPTION
@@ -890,6 +892,8 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
                                 RAISE shift_already_done;
                             ELSIF inputcomplete = 0 THEN
                                 RAISE proctor_limit;
+                            ELSE
+                                dbms_output.put_line('New shift inserted for given date and dorm');
                             END IF;
 
                         EXCEPTION

@@ -262,7 +262,8 @@ FROM
 --Report students opting for dorms   
 CREATE OR REPLACE VIEW students_opting_dorms AS
     SELECT
-        is_resident, (select count(*) from student) total_students,
+        (select count(*) from student) total_students,
+        is_resident,
         COUNT(*) student_count
     FROM
         student
