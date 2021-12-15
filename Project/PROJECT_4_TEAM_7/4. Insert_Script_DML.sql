@@ -3302,20 +3302,6 @@ BEGIN
     insertdormmanagementdata.p_utility_entry(10, 4);
     insertdormmanagementdata.p_utility_entry(15, 5);
     insertdormmanagementdata.p_utility_entry(20, 6);
-    insertdormmanagementdata.p_utility_entry(15, 4);
-    insertdormmanagementdata.p_utility_entry(20, 2);
-    insertdormmanagementdata.p_utility_entry(9, 1);
-    insertdormmanagementdata.p_utility_entry(10, 10);
-    insertdormmanagementdata.p_utility_entry(15, 55);
-    insertdormmanagementdata.p_utility_entry(8, 65);
-    insertdormmanagementdata.p_utility_entry(2, 44);
-    insertdormmanagementdata.p_utility_entry(1, 30);
-    insertdormmanagementdata.p_utility_entry(8, 56);
-    insertdormmanagementdata.p_utility_entry(2, 48);
-    insertdormmanagementdata.p_utility_entry(1, 73);
-    insertdormmanagementdata.p_utility_entry(8, 25);
-    insertdormmanagementdata.p_utility_entry(2, 49);
-    insertdormmanagementdata.p_utility_entry(1, 36);
     
     
     insertdormmanagementdata.shiftscheduler(sysdate + 5);
