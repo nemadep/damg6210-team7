@@ -1033,7 +1033,7 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
     PROCEDURE create_role (
         rolename VARCHAR
     ) IS
-        sqlstatement VARCHAR2(512);
+        sqlstatement VARCHAR2(255);
         role_exists EXCEPTION;
         PRAGMA exception_init ( role_exists, -1920 );
     BEGIN
@@ -1089,7 +1089,7 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
     ) IS
 
         is_role_available NUMBER;
-        sqlstatement      VARCHAR2(512);
+        sqlstatement      VARCHAR2(255);
         role_exists EXCEPTION;
         PRAGMA exception_init ( role_exists, -1920 );
     BEGIN
