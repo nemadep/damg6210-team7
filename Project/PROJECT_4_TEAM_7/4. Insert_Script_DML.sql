@@ -77,13 +77,13 @@ BEGIN
     insertdormmanagementdata.insertdorm('Hastings Hall', 200, 'Boston', 'MA', '02139',
                                        '316 Huntington Ave', '');
 
-    insertdormmanagementdata.insertdorm('Meserve Hall', 400, 'Boston', 'MA', '02127',
+    insertdormmanagementdata.insertdorm('Meserve Hall', 100, 'Boston', 'MA', '02127',
                                        '35 Leon St', '');
 
     insertdormmanagementdata.insertdorm('Northeastern University Smith Hall', 150, 'Boston', 'MA', '02149',
                                        '129 Hemenway St', '');
 
-    insertdormmanagementdata.insertdorm('Lake Hall', 300, 'Boston', 'MA', '02115',
+    insertdormmanagementdata.insertdorm('Lake Hall', 250, 'Boston', 'MA', '02115',
                                        '43 Leon St', '');
 
     insertdormmanagementdata.insertdorm('Nightingale Hall', 300, 'Boston', 'MA', '02131',
@@ -98,7 +98,7 @@ BEGIN
     insertdormmanagementdata.insertdorm('White Hall', 200, 'Boston', 'MA', '02139',
                                        'White Hall', '21 Forsyth St');
 
-    insertdormmanagementdata.insertdorm('Hurtig Hall', 300, 'Boston', 'MA', '02147',
+    insertdormmanagementdata.insertdorm('Hurtig Hall', 250, 'Boston', 'MA', '02147',
                                        '10 Gainsborough St', '');
 
     insertdormmanagementdata.insertdorm('Northeastern University Dining Services', 500, 'Boston', 'MA', '02740',
@@ -110,16 +110,16 @@ BEGIN
     insertdormmanagementdata.insertdorm('Robinson Hall', 150, 'Boston', 'MA', '02130',
                                        '336 Huntington Ave', '');
 
-    insertdormmanagementdata.insertdorm('Richards Hall', 300, 'Boston', 'MA', '02149',
+    insertdormmanagementdata.insertdorm('Richards Hall', 450, 'Boston', 'MA', '02149',
                                        '360 Huntington Ave', '');
 
-    insertdormmanagementdata.insertdorm('Loftman Hall', 300, 'Boston', 'MA', '02127',
+    insertdormmanagementdata.insertdorm('Loftman Hall', 50, 'Boston', 'MA', '02127',
                                        'Northeastern University', '157 Hemenway St');
 
-    insertdormmanagementdata.insertdorm('Shillman Hall', 300, 'Boston', 'MA', '02741',
+    insertdormmanagementdata.insertdorm('Shillman Hall', 400, 'Boston', 'MA', '02741',
                                        'Northeastern University', '115 Forsyth St');
 
-    insertdormmanagementdata.insertdorm('Kerr Hall', 300, 'Boston', 'MA', '02740',
+    insertdormmanagementdata.insertdorm('Kerr Hall', 100, 'Boston', 'MA', '02740',
                                        '96 Fenway', '');
 
     insertdormmanagementdata.insertdorm('Hayden Hall', 300, 'Boston', 'MA', '02703',
@@ -3302,6 +3302,21 @@ BEGIN
     insertdormmanagementdata.p_utility_entry(10, 4);
     insertdormmanagementdata.p_utility_entry(15, 5);
     insertdormmanagementdata.p_utility_entry(20, 6);
+    insertdormmanagementdata.p_utility_entry(15, 4);
+    insertdormmanagementdata.p_utility_entry(20, 2);
+    insertdormmanagementdata.p_utility_entry(9, 1);
+    insertdormmanagementdata.p_utility_entry(10, 10);
+    insertdormmanagementdata.p_utility_entry(15, 55);
+    insertdormmanagementdata.p_utility_entry(8, 65);
+    insertdormmanagementdata.p_utility_entry(2, 44);
+    insertdormmanagementdata.p_utility_entry(1, 30);
+    insertdormmanagementdata.p_utility_entry(8, 56);
+    insertdormmanagementdata.p_utility_entry(2, 48);
+    insertdormmanagementdata.p_utility_entry(1, 73);
+    insertdormmanagementdata.p_utility_entry(8, 25);
+    insertdormmanagementdata.p_utility_entry(2, 49);
+    insertdormmanagementdata.p_utility_entry(1, 36);
+    
     
     insertdormmanagementdata.shiftscheduler(sysdate + 5);
     insertdormmanagementdata.shiftscheduler(sysdate + 6, 3);
