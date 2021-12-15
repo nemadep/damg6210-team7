@@ -240,3 +240,114 @@ END;
 /
 
 
+dbms_output.put_line('Testcase 5');
+create or replace PROCEDURE closeCase (
+
+    policeID    NUMBER,
+    caseID      NUMBER,
+    caseStatus  VARCHAR 
+
+) IS
+    
+    is_police_available             NUMBER;
+    is_case_available               NUMBER;
+    is_case_already_closed          NUMBER;
+    is_case_mapped_to_given_police  NUMBER;
+
+    
+    e_police_valid                      EXCEPTION;
+    e_case_valid                        EXCEPTION;
+    e_case_already_closed               EXCEPTION;
+    e_case_status_not_valid             EXCEPTION;
+    e_case_not_mapped_to_given_police   EXCEPTION;
+   
+BEGIN
+    IF caseStatus IN ('Closed') THEN
+        -- Check if given case is mapped to the given police
+        SELECT 
+            COUNT(*)
+        INTO is_case_mapped_to_given_police
+        FROM
+            police_incident_mapping
+        WHERE (case_id = caseId AND police_id = policeId);
+    
+        -- Check if case is already closed
+        SELECT 
+            COUNT(*)
+        INTO is_case_already_closed
+        FROM
+            police_incident_mapping
+        WHERE (case_id = caseId AND case_status = caseStatus);
+        
+        -- Check if police exists
+        SELECT
+            COUNT(*)
+        INTO is_police_available
+        FROM
+            police
+        WHERE
+            police_id = policeID;
+            
+        -- Check is case exists
+        SELECT
+            COUNT(*)
+        INTO is_case_available
+        FROM
+            incident
+        WHERE
+            case_id = caseID;
+        
+        IF is_police_available = 0 THEN
+            RAISE e_police_valid;
+                
+        ELSIF is_case_available = 0 THEN
+            RAISE e_case_valid;
+                
+        ELSIF is_case_mapped_to_given_police = 0 THEN
+            RAISE e_case_not_mapped_to_given_police;
+        
+        ELSIF is_case_already_closed > 0 THEN
+            RAISE e_case_already_closed;
+                
+        ELSE
+
+            -- Close the case
+            UPDATE police_incident_mapping
+            SET case_status = caseStatus
+            WHERE case_id = caseID;
+            
+            dbms_output.put_line('Case closed successfully!');
+            
+        END IF;
+        
+    ELSE
+        RAISE e_case_status_not_valid;
+    END IF;
+    
+    
+    
+EXCEPTION
+
+    WHEN e_case_already_closed THEN
+        dbms_output.put_line('Case already closed!');
+    
+    WHEN e_police_valid THEN
+        dbms_output.put_line('Police not found!');
+    
+    WHEN e_case_valid THEN
+        dbms_output.put_line('Case not found!');
+        
+    WHEN e_case_status_not_valid THEN
+        dbms_output.put_line('Case status is not valid!');
+        
+    WHEN e_case_not_mapped_to_given_police THEN
+        dbms_output.put_line('Case is not mapped to the given police!');
+        
+END;
+/
+
+EXEC closeCase(3, 4, 'Closed');
+EXEC closeCase(38, 2, 'Open');
+EXEC closeCase(3, 4, 'Closed');
+EXEC closeCase(143, 54, 'Closed');
+EXEC closeCase(23, 6, 'Closed');
