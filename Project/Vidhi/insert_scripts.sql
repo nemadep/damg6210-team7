@@ -133,6 +133,7 @@ BEGIN
     	VALUES (sname, scontact, sdob, sgender, resident, permaddress, semail );
     ELSE
         dbms_output.put_line('----Student already exists----');
+    END IF;
 END;
 /
 
