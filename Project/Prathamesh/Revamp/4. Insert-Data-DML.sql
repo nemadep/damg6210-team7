@@ -1,5 +1,29 @@
 SET SERVEROUTPUT ON;
-
+CREATE OR REPLACE TRIGGER t_resident_addition AFTER
+    UPDATE ON student
+    REFERENCING
+            NEW AS new
+            OLD AS old
+    FOR EACH ROW
+DECLARE
+    l_transaction VARCHAR2(10);
+BEGIN
+    IF
+        ( ( :old.is_resident <> :new.is_resident ) OR (
+            :old.is_resident IS NULL
+            AND :new.is_resident IS NOT NULL
+        ) OR (
+            :old.is_resident IS NOT NULL
+            AND :new.is_resident IS NULL
+        ) )
+        AND :new.is_resident = 'TRUE'
+    THEN
+        BEGIN
+            insertdormmanagementdata.p_resident_addition(:new.student_id, :new.is_resident);
+        END;
+    END IF;
+END;
+/
 BEGIN
     insertdormmanagementdata.insertdorm('Hastings Hall', 200, 'Boston', 'MA', '02139',
                                        '316 Huntington Ave', '');

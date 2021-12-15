@@ -963,7 +963,9 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         is_user_available NUMBER;
     BEGIN
         is_user_available := f_is_user_already_created(username);
-        IF ( is_user_available = 0 ) THEN
+                    dbms_output.put_line('is_user_available!'||is_user_available);
+
+        IF ( is_user_available = 1 ) THEN
             EXECUTE IMMEDIATE 'CREATE USER '
                               || ''
                               || username
@@ -1073,7 +1075,7 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         WHERE
             lower(username) = lower(username);
 
-        IF is_available > 0 THEN
+        IF is_available != 0 THEN
             is_available := 1;
         END IF;
         RETURN is_available;
@@ -1081,3 +1083,4 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
 
 END;
 /
+
