@@ -192,6 +192,51 @@ EXEC test1_makestudentaresident_dormvalidation(229, 'Willis Hall', '12-Nov-2021'
 
 
 dbms_output.put_line('Testcase 4');
+CREATE OR REPLACE PROCEDURE test2_makestudentaresident_triggerbased (
+    studentid NUMBER
+) IS
+    temp_student_residence VARCHAR2(10);
+    temp_student_resident  NUMBER;
+    already_residence EXCEPTION;
+BEGIN
+    SELECT
+        is_resident
+    INTO temp_student_residence
+    FROM
+        student
+    WHERE
+        student_id = studentid;
 
+    dbms_output.put_line('Initial Stduent id -  ' || studentid);
+    dbms_output.put_line('Student Residence Status -  ' || temp_student_residence);
+    IF ( temp_student_residence = 'TRUE' ) THEN
+        RAISE already_residence;
+    END IF;
+    EXECUTE IMMEDIATE q'!update student set is_resident = 'TRUE' where student_id = !'
+                      || studentid
+                      || '';
+    COMMIT;
+    dbms_output.put_line('Trigger triggered!');
+    SELECT
+        is_resident
+    INTO temp_student_residence
+    FROM
+        student
+    WHERE
+        student_id = studentid;
+
+    dbms_output.put_line('Student Residence Status - ' || temp_student_residence);
+EXCEPTION
+    WHEN already_residence THEN
+        dbms_output.put_line('Student is already a Resideny');
+    WHEN OTHERS THEN
+        dbms_output.put_line(sqlerrm);
+END;
+/
+
+BEGIN
+    test2_makestudentaresident_triggerbased(156);
+END;
+/
 
 
