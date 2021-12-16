@@ -73,7 +73,7 @@ CREATE OR REPLACE VIEW v_no_of_cases AS
         ON d.dorm_id = c.dorm_id
     )
     SELECT
-        dorm_id,
+        (select count(*) from incident) total_cases,
         dorm_name,
         count_cases
     FROM

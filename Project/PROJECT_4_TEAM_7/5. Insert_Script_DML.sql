@@ -3251,6 +3251,9 @@ BEGIN
     insertdormmanagementdata.insertproctor('Ealasaid Sellstrom', '(935) 5461920', 'esellstrom2o@lulu.com', '8374 Shelley Hill', '11-Feb-2001');
     insertdormmanagementdata.insertproctor('Douglas Depport', '(311) 1596507', 'ddepport2p@walmart.com', '52887 Continental Crossing',
     '24-Sep-1987');
+    
+    insertdormmanagementdata.remove_proctor(10);
+    
     insertdormmanagementdata.insertsupervisor('Ryley Scrivin', '7842 Longview Way', '(972) 9294324', 'rscrivin0@geocities.com');
     insertdormmanagementdata.insertsupervisor('Roddie Lurriman', '6 Granby Parkway', '(682) 8855719', 'rlurriman1@stanford.edu');
     insertdormmanagementdata.insertsupervisor('Tiffy O Deoran', '653 Surrey Way', '(853) 2811364', 'todeoran2@netlog.com');
