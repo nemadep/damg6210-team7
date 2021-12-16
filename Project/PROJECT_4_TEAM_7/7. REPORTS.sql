@@ -2,30 +2,29 @@
 
 --report to show top 10 utilities that are most accessed by residents.
 CREATE OR REPLACE VIEW v_utility_access AS
-    WITH utility_info AS(
-        SELECT 
-            distinct(u.utility_id), 
+    WITH utility_info AS (
+        SELECT DISTINCT
+            ( u.utility_id ),
             um.utility_name
-        FROM 
-            utility_type_master um 
-            RIGHT JOIN utility u ON um.utility_id = u.utility_id
-    ),utiltiy_access_count AS(
-        SELECT 
-            utility_id, 
-            count(access_date) AS count_utiltity
-        FROM 
+        FROM
+            utility_type_master um
+            RIGHT JOIN utility             u ON um.utility_id = u.utility_id
+    ), utiltiy_access_count AS (
+        SELECT
+            utility_id,
+            COUNT(access_date) AS count_utiltity
+        FROM
             utility
-        GROUP BY 
+        GROUP BY
             utility_id
-    ),info_access AS(
-        SELECT  
-            c.utility_id, 
-            i.utility_name, 
+    ), info_access AS (
+        SELECT
+            c.utility_id,
+            i.utility_name,
             c.count_utiltity
-        FROM 
-        utility_info i 
-        INNER JOIN utiltiy_access_count c
-        ON i.utility_id = c.utility_id
+        FROM
+                 utility_info i
+            INNER JOIN utiltiy_access_count c ON i.utility_id = c.utility_id
     )
     SELECT
         utility_id,
@@ -48,48 +47,53 @@ CREATE OR REPLACE VIEW v_utility_access AS
     WHERE
         row_number <= 10;
 
-SELECT * 
-FROM 
-v_utility_access;
+SELECT
+    *
+FROM
+    v_utility_access;
 
 --report to show number of cases generated from respective dorms
 CREATE OR REPLACE VIEW v_no_of_cases AS
-    WITH cases_count AS(
-        SELECT 
-            dorm_id, 
-            count(case_id) AS count_cases
-        FROM 
+    WITH cases_count AS (
+        SELECT
+            dorm_id,
+            COUNT(case_id) AS count_cases
+        FROM
             incident
-        GROUP BY 
+        GROUP BY
             dorm_id
-    ), info_dorm AS(
-        SELECT  
-            c.dorm_id, 
-            d.dorm_name, 
+    ), info_dorm AS (
+        SELECT
+            c.dorm_id,
+            d.dorm_name,
             c.count_cases
-        FROM 
-        dorm d 
-        INNER JOIN cases_count c
-        ON d.dorm_id = c.dorm_id
+        FROM
+                 dorm d
+            INNER JOIN cases_count c ON d.dorm_id = c.dorm_id
     )
     SELECT
-        (select count(*) from incident) total_cases,
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                incident
+        ) total_cases,
         dorm_name,
         count_cases
     FROM
         (
             SELECT
                 info_dorm.*
-                
             FROM
                 info_dorm
             ORDER BY
-                count_cases DESC 
- );
+                count_cases DESC
+        );
 
-SELECT * 
-FROM 
-v_no_of_cases;
+SELECT
+    *
+FROM
+    v_no_of_cases;
 
 --report to show top 10 residents with maximum swipes
 CREATE OR REPLACE VIEW v_log_stats AS
@@ -194,7 +198,6 @@ SELECT
 FROM
     v_guests_stats;
 
-
 /*Report to find the proctor scheduled with max number of shifts*/
 
 CREATE OR REPLACE VIEW proctorwithmaxshifts AS
@@ -227,7 +230,6 @@ SELECT
 FROM
     proctorwithmaxshifts;
 
-
 --Report to check how many dorm are occupied   
 CREATE OR REPLACE VIEW dorm_occupancy AS
     WITH dorm_cap AS (
@@ -248,7 +250,8 @@ CREATE OR REPLACE VIEW dorm_occupancy AS
             res.dorm_id
     )
     SELECT
-        dc.dorm_id, dc.dorm_capacity,
+        dc.dorm_id,
+        dc.dorm_capacity,
         nvl((dc.dorm_capacity - do.dorm_count), dc.dorm_capacity) AS rooms_left
     FROM
         dorm_cap dc
@@ -262,17 +265,46 @@ FROM
 --Report students opting for dorms   
 CREATE OR REPLACE VIEW students_opting_dorms AS
     SELECT
-        (select count(*) from student) total_students,
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                student
+        )        total_students,
         is_resident,
         COUNT(*) student_count
     FROM
         student
     GROUP BY
         is_resident
-    order by student_count;
-
+    ORDER BY
+        student_count;
 
 SELECT
     *
 FROM
     students_opting_dorms;
+
+
+
+DECLARE
+    mview VARCHAR2(255);
+        already_exists EXCEPTION;
+        PRAGMA exception_init ( already_exists, -12002 );
+    BEGIN
+        mview := q'!CREATE MATERIALIZED VIEW see_shifts_details as SELECT shift_type AS shift_name, to_char(start_time, 'DD-Mon-YYYY HH:MM') as shift_starts_from, to_char(end_time, 'DD-Mon-YYYY HH:MM') as shift_until from shifts_type_master!';
+        EXECUTE IMMEDIATE mview;
+        dbms_output.put_line('  OK: ' || mview); 
+    EXCEPTION
+    WHEN already_exists THEN
+        dbms_output.put_line('WARN: ' || mview);
+        dbms_output.put_line('Already exists');
+    WHEN OTHERS THEN
+        dbms_output.put_line('MATERIALIZED VIEW  Already exists');
+END;
+/
+    
+    
+
+    
+
