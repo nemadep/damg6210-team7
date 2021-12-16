@@ -1165,9 +1165,7 @@ CREATE OR REPLACE PACKAGE BODY manage_users_and_access AS
         sqls := 'GRANT '
                 || rolename
                 || ' TO '
-                || '"'
-                || username
-                || '"';
+                || username;
 
         EXECUTE IMMEDIATE sqls;
         dbms_output.put_line('  OK: ' || sqls);
