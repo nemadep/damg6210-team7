@@ -502,6 +502,69 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         WHEN OTHERS THEN
             dbms_output.put_line(sqlerrm);
     END;
+    
+    PROCEDURE remove_proctor (
+        procid NUMBER
+    ) AS
+        procfound NUMBER := 0;
+        no_proctor EXCEPTION;
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO procfound
+        FROM
+            proctor
+        WHERE
+            proctor_id = procid;
+    
+        IF procfound = 0 THEN
+            RAISE no_proctor;
+        ELSE
+            DELETE FROM proctor
+            WHERE
+                proctor_id = procid;
+    
+            dbms_output.put_line('--Proctor deleted--');
+        END IF;
+    
+    EXCEPTION
+        WHEN no_proctor THEN
+            dbms_output.put_line('--Proctor not found--');
+        WHEN OTHERS THEN
+            dbms_output.put_line(sqlerrm);
+    END;
+    
+    PROCEDURE remove_supervisor (
+        supid NUMBER
+    ) AS
+        supfound NUMBER := 0;
+        no_sup EXCEPTION;
+    BEGIN
+        SELECT
+            COUNT(*)
+        INTO supfound
+        FROM
+            supervisor
+        WHERE
+            supervisor_id = supid;
+    
+        IF supfound = 0 THEN
+            RAISE no_sup;
+        ELSE
+            DELETE FROM supervisor
+            WHERE
+                supervisor_id = supid;
+    
+            dbms_output.put_line('--Supervisor deleted--');
+        END IF;
+    
+    EXCEPTION
+        WHEN no_sup THEN
+            dbms_output.put_line('--Supervisor not found--');
+        WHEN OTHERS THEN
+            dbms_output.put_line(sqlerrm);
+    END;
+
 
     FUNCTION f_is_valid_utility (
         utilityid IN NUMBER

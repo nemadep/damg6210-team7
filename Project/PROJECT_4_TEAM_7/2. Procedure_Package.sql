@@ -44,6 +44,14 @@ CREATE OR REPLACE PACKAGE insertdormmanagementdata AS
         supcontact VARCHAR,
         supemail   VARCHAR
     );
+    
+    PROCEDURE remove_proctor (
+        procid NUMBER
+    );
+    
+    PROCEDURE remove_supervisor (
+        supid NUMBER
+    );
 
     FUNCTION f_is_valid_utility (
         utilityid IN NUMBER
