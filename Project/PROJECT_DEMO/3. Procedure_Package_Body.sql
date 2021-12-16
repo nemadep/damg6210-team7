@@ -1059,7 +1059,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
 
     EXCEPTION
         WHEN e_dorm_valid THEN
-            raise_application_error(-20210, 'Invalid dorm!');
+            dbms_output.put_line('Dorm not found');
     END;
 
     PROCEDURE mapcasetopolice (
@@ -1127,9 +1127,9 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         WHEN e_case_already_mapped THEN
             dbms_output.put_line('Case already mapped to police!');
         WHEN e_police_valid THEN
-            raise_application_error(-20320, 'Invalid police!');
+            dbms_output.put_line('Police not found');
         WHEN e_case_valid THEN
-            raise_application_error(-20330, 'Invalid case!');
+            dbms_output.put_line('Case not found');
     END;
 
 END;
