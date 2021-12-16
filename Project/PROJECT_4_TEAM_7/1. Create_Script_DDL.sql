@@ -64,6 +64,7 @@ CREATE OR REPLACE PROCEDURE p_intial_reset AS
     c_police_incident_mapping INT;
     c_guest_seq               INT;
     c_student_seq             INT;
+    c_audit                   INT;
 BEGIN
     SELECT
         func_is_table_created('shifts_type_master')
@@ -146,6 +147,12 @@ BEGIN
     SELECT
         func_is_table_created('police_incident_mapping')
     INTO c_police_incident_mapping
+    FROM
+        dual;
+    
+    SELECT
+        func_is_table_created('police_case_audit')
+    INTO c_audit
     FROM
         dual;
 
@@ -476,6 +483,23 @@ BEGIN
                     ON DELETE CASCADE
         )!';
         dbms_output.put_line('Created : TABLE - GUEST');
+    END IF;
+    
+    IF c_audit = 1 THEN
+        dbms_output.put_line('**************************************');
+        dbms_output.put_line('-------TABLE - Police Case Audit-------');
+        dbms_output.put_line('---------Already Exists--------');
+        dbms_output.put_line('**************************************');
+    ELSE
+        EXECUTE IMMEDIATE q'!CREATE TABLE police_case_audit (
+            case_id     NUMBER,
+            changed_by  varchar(50),
+            changed_on  TIMESTAMP,
+            change_type VARCHAR(50),
+            old_status  VARCHAR(50),
+            new_status  VARCHAR(50)
+        )!';
+        dbms_output.put_line('Created : TABLE - police_case_audit');
     END IF;
 
     EXECUTE IMMEDIATE q'!CREATE OR REPLACE TRIGGER tri_guest BEFORE

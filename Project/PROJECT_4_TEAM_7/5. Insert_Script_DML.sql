@@ -21,6 +21,80 @@ BEGIN
 END;
 /
 
+--Aduit table trigger
+CREATE OR REPLACE TRIGGER audit_cases AFTER
+    INSERT OR UPDATE OR DELETE ON police_incident_mapping
+    REFERENCING
+            NEW AS new
+            OLD AS old
+    FOR EACH ROW
+DECLARE
+    changekind VARCHAR(50);
+BEGIN
+    IF inserting THEN
+        changekind := 'Inserting new case';
+        INSERT INTO police_case_audit (
+            case_id,
+            changed_by,
+            changed_on,
+            change_type,
+            old_status,
+            new_status
+        ) VALUES (
+            :new.case_id,
+            user,
+            sysdate,
+            'Insert',
+            'Record created',
+            :new.case_status
+        );
+
+    ELSIF updating THEN
+        IF ( ( :old.case_status <> :new.case_status ) OR (
+            :old.case_status IS NULL
+            AND :new.case_status IS NOT NULL
+        ) OR (
+            :old.case_status IS NOT NULL
+            AND :new.case_status IS NULL
+        ) ) THEN
+            INSERT INTO police_case_audit (
+                case_id,
+                changed_by,
+                changed_on,
+                change_type,
+                old_status,
+                new_status
+            ) VALUES (
+                :new.case_id,
+                user,
+                systimestamp,
+                'Update',
+                :old.case_status,
+                :new.case_status
+            );
+
+        END IF;
+    ELSE
+        INSERT INTO police_case_audit (
+            case_id,
+            changed_by,
+            changed_on,
+            change_type,
+            old_status,
+            new_status
+        ) VALUES (
+            :old.case_id,
+            user,
+            systimestamp,
+            'Delete',
+            :old.case_status,
+            'Record Removed'
+        );
+
+    END IF;
+END;
+/
+
 BEGIN
     insertdormmanagementdata.insertutilitymaster('Washer-101', 'This Washer is in Laundry Room 1 Ell Hall');
     insertdormmanagementdata.insertutilitymaster('Washer-102', 'This Washer is in Laundry Room 1 Ell Hall');
@@ -3457,3 +3531,5 @@ SELECT
     *
 FROM
     utility_type_master;
+    
+SELECT * FROM police_case_audit;
