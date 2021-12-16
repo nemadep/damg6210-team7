@@ -1,6 +1,4 @@
--- cron for shifts
-
-CREATE OR REPLACE PROCEDURE test1_makestudentaresident (
+CREATE OR REPLACE PROCEDURE test1_makestudentaresident_dormvalidation (
     studuentid NUMBER,
     dormname   VARCHAR,
     from_date  DATE,
@@ -26,6 +24,8 @@ CREATE OR REPLACE PROCEDURE test1_makestudentaresident (
 
         COMMIT;
     END;
+
+
 
 BEGIN
     SELECT
@@ -58,7 +58,7 @@ BEGIN
     WHERE
         dorm_id = temp_dorm_id;
 
-    temp_is_dorm_available := f_check_dorm_availability(temp_dorm_id, from_date, to_date);
+    temp_is_dorm_available := insertdormmanagementdata.f_check_dorm_availability(temp_dorm_id, from_date, to_date);
     dbms_output.put_line('Initial Capacity ' || temp_dummy_dorm_capacity);
     dbms_output.put_line('Original Capacity ' || temp_original_dorm_capacity);
     IF ( temp_is_dorm_available = 0 ) THEN
@@ -72,13 +72,7 @@ BEGIN
 END;
 /
 
-EXEC test1_makestudentaresident(229, 'Willis Hall', '12-Nov-2021', '03-Aug-2030');
+EXEC test1_makestudentaresident_dormvalidation(229, 'Willis Hall', '12-Nov-2021', '03-Aug-2030');
 
-SELECT
-    *
-FROM
-    dorm
-WHERE
-    dorm_name = 'Willis Hall';
 
 -- studentId, dormname, form, to

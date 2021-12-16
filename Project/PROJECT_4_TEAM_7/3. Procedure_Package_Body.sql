@@ -30,7 +30,7 @@ CREATE OR REPLACE PACKAGE BODY insertdormmanagementdata AS
         available_dorm NUMBER;
         available_name VARCHAR(50);
     BEGIN
-        IF ( isresident = 'TRUE' ) THEN
+        IF isresident = 'TRUE' THEN
             available_dorm := f_get_first_available_dorm();
             dbms_output.put_line('dom' || available_dorm);
             SELECT

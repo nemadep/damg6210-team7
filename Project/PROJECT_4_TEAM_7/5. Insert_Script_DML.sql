@@ -9,18 +9,13 @@ CREATE OR REPLACE TRIGGER t_resident_addition AFTER
 DECLARE
     l_transaction VARCHAR2(10);
 BEGIN
+    dbms_output.put_line('t_resident_addition - TRIGGERED');
     IF
-        ( ( :old.is_resident <> :new.is_resident ) OR (
-            :old.is_resident IS NULL
-            AND :new.is_resident IS NOT NULL
-        ) OR (
-            :old.is_resident IS NOT NULL
-            AND :new.is_resident IS NULL
-        ) )
+        ( :old.is_resident <> :new.is_resident  )
         AND :new.is_resident = 'TRUE'
     THEN
         BEGIN
-            insertdormmanagementdata.p_resident_addition(:new.student_id, :new.is_resident);
+            insertdormmanagementdata.p_resident_addition(:new.student_id, 'TRUE');
         END;
     END IF;
 END;
